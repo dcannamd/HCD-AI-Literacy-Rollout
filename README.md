@@ -56,6 +56,8 @@ cp .env.example .env
 npm start
 ```
 
+Run the tests with `npm test`.
+
 Then visit `http://localhost:3000`. Check that it's running at `http://localhost:3000/health`.
 
 ---
@@ -72,7 +74,7 @@ The free instance is fine for testing. Switch to an always-on instance before sh
 
 ## Build phases
 
-1. **Forms and templates (no AI)** ← current
+1. **Forms and templates (no AI)** ← current: company profile and the purpose and promises statement are live
 2. AI personalization
 3. Practice sandbox
 4. Grant finder (RAG)

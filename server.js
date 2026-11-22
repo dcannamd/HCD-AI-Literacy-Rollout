@@ -12,16 +12,25 @@ const MODULES = require('./public/modules.json');
 
 app.use(express.json({ limit: '100kb' }));
 app.use(express.static(PUBLIC_DIR));
+// Markdown renderer for the browser, served from the installed package (no CDN needed).
+app.get('/vendor/marked.min.js', (req, res) => {
+  res.sendFile(require.resolve('marked/marked.min.js'));
+});
+// Document templates are read-only markdown in content/templates.
+app.use('/templates', express.static(path.join(__dirname, 'content', 'templates')));
 
 // Render uses this to check the app is up.
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', version: require('./package.json').version });
 });
 
-// One page per module. The page reads its own content from modules.json.
+// One page per module. A module with its own page (public/<slug>.html) gets that page;
+// the rest show a placeholder that reads its text from modules.json.
+const fs = require('fs');
 MODULES.forEach((m) => {
+  const ownPage = path.join(PUBLIC_DIR, `${m.slug}.html`);
   app.get(`/${m.slug}`, (req, res) => {
-    res.sendFile(path.join(PUBLIC_DIR, 'module.html'));
+    res.sendFile(fs.existsSync(ownPage) ? ownPage : path.join(PUBLIC_DIR, 'module.html'));
   });
 });
 
