@@ -62,7 +62,6 @@ footer { margin-top: 48px; color: var(--muted); font-size: 0.9rem; }
 button { font: inherit; font-weight: 600; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
 button.secondary { background: transparent; color: var(--accent); }
 .status { min-height: 1.5em; color: var(--muted); }
-.next { margin-top: 32px; font-weight: 600; }
 
 /* Generated document */
 .document { margin-top: 24px; padding: 32px; border: 1px solid var(--line); border-radius: 12px; }
@@ -119,3 +118,11 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .option h3 { margin: 0 0 8px; }
 .option pre { white-space: pre-wrap; font: inherit; background: #f6f6f4; padding: 10px; border-radius: 8px; }
 .prompt-text { font-family: ui-monospace, Menlo, monospace; font-size: 0.9rem; }
+
+/* Previous / next step links */
+.step-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); }
+.step-nav a { display: grid; gap: 2px; grid-row: 1; align-content: start; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: var(--ink); }
+.step-nav a:hover, .step-nav a:focus-visible { border-color: var(--accent); }
+.step-nav a span { font-size: 0.85rem; color: var(--muted); }
+.step-nav a.step-next { grid-column: 2; text-align: right; }
+.step-nav a strong { color: var(--accent); }
