@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your learning plan · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p class="no-print"><a href="/">&larr; All steps</a></p>
+    <header class="no-print">
+      <p class="eyebrow">Step 1 · For every employee</p>
+      <h1>Your AI learning plan</h1>
+      <p class="lead">Answer a few questions and get a plan made for your role, about 20 minutes a week. There are no wrong answers: this is a starting point, not a test.</p>
+    </header>
+
+    <p class="notice no-print">Your answers and plan stay on this device. Nobody else sees them unless you choose to share.</p>
+
+    <form id="doc-form" class="form no-print">
+      <fieldset>
+        <legend>Where do you work?</legend>
+        <label class="inline"><input type="radio" name="country" value="CA"> Canada</label>
+        <label class="inline"><input type="radio" name="country" value="US"> United States</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Which describes your role? Pick all that fit.</legend>
+        <label class="inline"><input type="checkbox" name="tiers" value="frontline"> I work directly with customers, clients or the public</label>
+        <label class="inline"><input type="checkbox" name="tiers" value="knowledge"> I work mostly with documents, data or ideas</label>
+        <label class="inline"><input type="checkbox" name="tiers" value="managers"> I manage people</label>
+        <label class="inline"><input type="checkbox" name="tiers" value="executives"> I'm part of the leadership team</label>
+        <label class="inline"><input type="checkbox" name="tiers" value="builders"> I build software, data or technical systems</label>
+      </fieldset>
+
+      <fieldset id="ratings">
+        <legend>How true is each of these for you today?</legend>
+        <p class="hint">1 = not yet, 5 = very much. Lower ratings simply move that topic earlier in your plan.</p>
+      </fieldset>
+
+      <label>Which task in your work would you most like AI to help with?
+        <input name="task" placeholder="e.g. writing follow-up emails to clients">
+        <span class="hint">Your practice exercises will use this task, always with made-up details.</span>
+      </label>
+
+      <label>What would make you feel more secure as we start using AI?
+        <textarea name="secure" rows="2" placeholder="e.g. Knowing nobody will judge me for asking basic questions"></textarea>
+      </label>
+
+      <fieldset>
+        <legend>How do you like to learn? (optional)</legend>
+        <label class="inline"><input type="checkbox" name="formats" value="short reading or videos"> Short reading or videos</label>
+        <label class="inline"><input type="checkbox" name="formats" value="hands-on practice"> Hands-on practice</label>
+        <label class="inline"><input type="checkbox" name="formats" value="learning with colleagues"> Learning with colleagues</label>
+        <label class="inline"><input type="checkbox" name="formats" value="talking it through with my manager"> Talking it through with my manager</label>
+      </fieldset>
+
+      <label>Time each week
+        <select name="minutes">
+          <option value="20" selected>About 20 minutes (1 session)</option>
+          <option value="40">About 40 minutes (2 sessions)</option>
+          <option value="60">About 60 minutes (3 sessions)</option>
+        </select>
+      </label>
+    </form>
+
+    <div class="actions no-print">
+      <button type="button" id="copy">Copy text</button>
+      <button type="button" id="download" class="secondary">Download (.md)</button>
+      <button type="button" id="print" class="secondary">Print or save as PDF</button>
+    </div>
+    <p id="status" role="status" class="status no-print"></p>
+
+    <article id="preview" class="document" aria-label="Your learning plan"></article>
+  </main>
+
+  <script src="/vendor/marked.min.js"></script>
+  <script src="/js/template.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/generator.js"></script>
+  <script src="/js/country.js"></script>
+  <script src="/js/plan.js"></script>
+  <script>
+    const AREA_SHORT = {
+      understand: 'understanding AI', explore: 'finding good uses', direct: 'giving clear instructions',
+      evaluate: 'checking AI output', responsible: 'using AI responsibly', build: 'building with AI'
+    };
+
+    Promise.all([
+      fetch('/learning-plans/activities.json').then((r) => r.json()),
+      fetch('/learning-plans/role-tiers.json').then((r) => r.json()),
+      fetch('/frameworks/ca.json').then((r) => r.json()),
+      fetch('/frameworks/us.json').then((r) => r.json())
+    ]).then(([activities, roleTiers, ca, us]) => {
+      const frameworks = { CA: ca, US: us };
+      const form = document.getElementById('doc-form');
+
+      // Self-rating questions, one per area.
+      const ratingsBox = document.getElementById('ratings');
+      Object.entries(activities.self_assessment).forEach(([area, statement]) => {
+        const wrap = document.createElement('label');
+        wrap.className = 'rating';
+        wrap.dataset.area = area;
+        const text = document.createElement('span');
+        text.textContent = statement;
+        const select = document.createElement('select');
+        select.name = `rate_${area}`;
+        ['', '1', '2', '3', '4', '5'].forEach((v) => {
+          const o = document.createElement('option');
+          o.value = v;
+          o.textContent = v ? v : 'Choose…';
+          select.append(o);
+        });
+        wrap.append(text, select);
+        ratingsBox.append(wrap);
+      });
+
+      // Default the country from the organization profile.
+      const profileCountry = HCDCountry.get();
+      if (profileCountry) {
+        const r = form.querySelector(`input[name=country][value=${profileCountry}]`);
+        if (r) r.checked = true;
+      }
+
+      function showBuildQuestion(tiers) {
+        ratingsBox.querySelector('[data-area=build]').hidden = !(tiers || []).includes('builders');
+      }
+
+      function label(fw, area) {
+        return (fw.areas[area] && fw.areas[area].label) || activities.areas[area].label;
+      }
+
+      HCDGenerator.setup({
+        draftKey: 'hcd-plan-v1',
+        templateUrl: '/templates/learning-plan.md',
+        filename: 'my-ai-learning-plan.md',
+        buildData: (f) => {
+          const tiers = f.tiers && f.tiers.length ? f.tiers : ['knowledge'];
+          showBuildQuestion(f.tiers);
+          const country = f.country || 'US';
+          const fw = frameworks[country];
+          const ratings = {};
+          Object.keys(activities.self_assessment).forEach((a) => { ratings[a] = f[`rate_${a}`]; });
+          const plan = HCDPlan.buildPlan({
+            tierIds: tiers, ratings, minutes: Number(f.minutes) || 20, task: f.task, country, activities, roleTiers
+          });
+
+          const rated = plan.areas.filter((a) => ratings[a]);
+          const strengths = rated.filter((a) => Number(ratings[a]) >= 4).map((a) => AREA_SHORT[a]);
+          const growth = rated.filter((a) => Number(ratings[a]) <= 2).map((a) => AREA_SHORT[a]);
+
+          // Goals: grouped by stage for Canada (Understand, Use, Build), as one list for the US.
+          const goalLine = (a) => `- **${label(fw, a)}.** ${activities.areas[a].goal} *How I'll know:* ${activities.areas[a].check}`;
+          let goals;
+          if (country === 'CA') {
+            goals = fw.groups
+              .map((g) => {
+                const inGroup = plan.areas.filter((a) => g.areas.includes(a));
+                return inGroup.length ? `**${g.label}**\n\n${inGroup.map(goalLine).join('\n')}` : '';
+              })
+              .filter(Boolean)
+              .join('\n\n');
+          } else {
+            goals = plan.areas.map(goalLine).join('\n');
+          }
+
+          const weeks = plan.weeks.map((week, i) => {
+            const parts = week.map((s) => {
+              const step = s.of > 1 ? ` (${s.number} of ${s.of})` : '';
+              return `**${label(fw, s.area)}${step}: ${s.title}**\n\n- *Learn:* ${s.learn}\n- *Try:* ${s.try}\n- *Reflect:* ${s.reflect}`;
+            });
+            return `### Week ${i + 1}\n\n${parts.join('\n\n')}`;
+          }).join('\n\n');
+
+          const tierInfo = tiers.map((t) => roleTiers.tiers[t]).filter(Boolean);
+          const resources = (fw.resources || [])
+            .filter((r) => country === 'CA' || tiers.includes('builders') || tiers.includes('executives'))
+            .map((r) => `- **${r.label}:** ${r.note}`)
+            .join('\n');
+
+          return {
+            framework: country === 'CA' ? 'Aligned with ' + fw.short : 'Aligned with the ' + fw.short,
+            today: HCDGenerator.today(),
+            strengths: HCDTemplate.joinList(strengths),
+            growth: HCDTemplate.joinList(growth),
+            no_ratings: rated.length === 0,
+            goals,
+            minutes: plan.perWeek * HCDPlan.SESSION_MINUTES,
+            rhythm: plan.perWeek === 1 ? 'one session a week' : `${plan.perWeek} sessions a week`,
+            length: `That's ${plan.sessionCount} sessions over ${plan.weeks.length} weeks, then a 90-day check-in.` +
+              (plan.weeks.length > 13
+                ? ` To finish within the 90-day rollout, choose about ${Math.ceil(plan.sessionCount / 13) * HCDPlan.SESSION_MINUTES} minutes a week, or keep this pace and take longer.`
+                : ''),
+            tier_formats: HCDTemplate.joinList(tierInfo.map((t) => t.format.toLowerCase())),
+            formats: HCDTemplate.joinList(f.formats || []),
+            tier_notes: tierInfo.filter((t) => t.note).map((t) => `*${t.label}:* ${t.note}`).join(' '),
+            weeks,
+            secure: f.secure || 'I can come back and add this any time.',
+            resources
+          };
+        }
+      });
+    });
+  </script>
+</body>
+</html>

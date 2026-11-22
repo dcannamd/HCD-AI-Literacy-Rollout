@@ -18,6 +18,12 @@
     "summary": "A conversation guide for HR, IT and employees to agree on an honest baseline, and soon a personal learning plan each employee owns."
   },
   {
+    "slug": "plan",
+    "step": "Step 1 · For every employee",
+    "title": "Your AI learning plan",
+    "summary": "A personal plan for your role, about 20 minutes a week. It stays on your device."
+  },
+  {
     "slug": "practice",
     "step": "Step 2",
     "title": "Learn and practise",

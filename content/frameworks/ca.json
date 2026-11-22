@@ -26,7 +26,7 @@
   "areas": {
     "understand": { "label": "Understand how AI works, and when not to use it" },
     "evaluate": { "label": "Evaluate AI outputs" },
-    "explore": { "label": "Explore AI uses in your work" },
+    "explore": { "label": "Explore AI uses at work" },
     "direct": { "label": "Direct AI effectively" },
     "responsible": { "label": "Use AI responsibly, including privacy" },
     "build": { "label": "Build with AI" }
