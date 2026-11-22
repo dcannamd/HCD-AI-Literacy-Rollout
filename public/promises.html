@@ -8,9 +8,9 @@
 </head>
 <body>
   <main class="wrap">
-    <p class="no-print"><a href="/">&larr; All steps</a></p>
+    <p class="no-print"><a href="/">&larr; Home</a></p>
     <header class="no-print">
-      <p class="eyebrow">Step 0</p>
+      <p class="eyebrow">Leader · Step 2</p>
       <h1>Purpose and promises</h1>
       <p class="lead">Before any survey, data or training, tell people what this program is for, and what it is not. Fill in the details and your statement updates as you type.</p>
     </header>
@@ -102,6 +102,7 @@
           policy_line: f.policy_link
             ? `You can find the AI policy at ${f.policy_link}.`
             : 'We will publish an AI policy and an approved-tools list before training starts, and tell everyone where to find them.',
+          plan_link: `${location.origin}/plan`,
           contact: f.contact,
           signed_by: f.signed_by
         };

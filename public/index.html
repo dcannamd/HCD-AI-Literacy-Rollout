@@ -17,7 +17,7 @@
 
     <section id="country-picker" class="country" aria-labelledby="country-heading">
       <h2 id="country-heading">Where is your organization?</h2>
-      <p class="hint">This sets the AI literacy framework, resources and funding the planner shows. You can change it any time.</p>
+      <p class="hint">This sets the AI literacy framework and resources the planner uses. You can change it any time.</p>
       <div class="actions">
         <button type="button" data-country="CA" class="secondary">Canada</button>
         <button type="button" data-country="US" class="secondary">United States</button>
@@ -25,13 +25,25 @@
       <div id="framework-note" class="framework-note" hidden></div>
     </section>
 
-    <section aria-labelledby="steps-heading">
-      <h2 id="steps-heading">The steps</h2>
-      <ol id="modules" class="cards"></ol>
-    </section>
+    <h2>Where would you like to start?</h2>
+    <div class="paths">
+      <section class="path" aria-labelledby="leader-heading">
+        <h3 id="leader-heading">I'm leading an AI rollout</h3>
+        <p>For HR, operations leads and consultants. Plan the rollout and create five documents to share with your organization.</p>
+        <ol id="leader-steps" class="path-steps"></ol>
+        <a class="button" href="/profile">Start the leader path</a>
+      </section>
+
+      <section class="path" aria-labelledby="employee-heading">
+        <h3 id="employee-heading">I'm building my AI skills</h3>
+        <p>For every employee. Make a learning plan for your role, about 20 minutes a week, and practise safely. Everything stays on your device.</p>
+        <ol id="employee-steps" class="path-steps"></ol>
+        <a class="button" href="/plan">Start my learning plan</a>
+      </section>
+    </div>
 
     <footer>
-      <p>Built by <a href="https://www.danacannam.com">Dana Cannam</a>. Phase 1 preview.</p>
+      <p>Built by <a href="https://www.danacannam.com">Dana Cannam</a>. Nothing you enter is sent to our server.</p>
     </footer>
   </main>
 
@@ -71,22 +83,16 @@
     fetch('/modules.json')
       .then((r) => r.json())
       .then((modules) => {
-        const list = document.getElementById('modules');
-        modules.forEach((m) => {
-          const li = document.createElement('li');
-          li.className = 'card';
-          const a = document.createElement('a');
-          a.href = '/' + m.slug;
-          const step = document.createElement('span');
-          step.className = 'step';
-          step.textContent = m.step;
-          const h3 = document.createElement('h3');
-          h3.textContent = m.title;
-          const p = document.createElement('p');
-          p.textContent = m.summary;
-          a.append(step, h3, p);
-          li.append(a);
-          list.append(li);
+        ['leader', 'employee'].forEach((path) => {
+          const list = document.getElementById(`${path}-steps`);
+          modules.filter((m) => m.path === path).forEach((m) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '/' + m.slug;
+            a.textContent = m.title;
+            li.append(a);
+            list.append(li);
+          });
         });
       });
   </script>

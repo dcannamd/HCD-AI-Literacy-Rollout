@@ -47,6 +47,8 @@ The AI tools currently approved for work are: {{approved_tools}}.
 
 ## Questions and access
 
+Everyone can make their own AI learning plan at {{plan_link}}. It takes a few minutes, and your plan stays on your own device.
+
 Questions about this program can go to {{contact}}. This statement is available in other formats on request{{#if languages}}, and in {{languages}}{{/if}}.
 
 **Signed:** {{signed_by}}

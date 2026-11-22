@@ -1,14 +1,16 @@
-// Previous / next links at the bottom of every step, in the order of modules.json,
-// so people can always move through the rollout without going back to the home page.
+// Previous / next links at the bottom of every step, within the same path
+// (leader or employee), in the order of modules.json.
 (function () {
   const slug = location.pathname.replace(/^\/|\/$/g, '');
   const main = document.querySelector('main');
   if (!slug || !main) return;
   fetch('/modules.json')
     .then((r) => r.json())
-    .then((modules) => {
-      const i = modules.findIndex((m) => m.slug === slug);
-      if (i < 0) return;
+    .then((all) => {
+      const current = all.find((m) => m.slug === slug);
+      if (!current) return;
+      const modules = all.filter((m) => m.path === current.path);
+      const i = modules.indexOf(current);
       const nav = document.createElement('nav');
       nav.className = 'step-nav no-print';
       nav.setAttribute('aria-label', 'Steps');
@@ -25,6 +27,6 @@
       };
       if (modules[i - 1]) nav.append(link(modules[i - 1], 'prev'));
       if (modules[i + 1]) nav.append(link(modules[i + 1], 'next'));
-      main.append(nav);
+      if (nav.children.length) main.append(nav);
     });
 })();
