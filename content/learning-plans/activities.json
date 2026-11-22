@@ -1,0 +1,164 @@
+{
+  "design": "Each session takes about 20 minutes: learn (5 min), try (10 min), reflect (5 min). Baseline areas get 1 session; deep areas get 3. Goals are written as observable behaviour (action mapping). {{task}} is replaced with the learner's own work task. Practice always uses made-up details.",
+  "areas": {
+    "understand": {
+      "goal": "I can explain what AI is good at, where it goes wrong, and when not to use it.",
+      "check": "I can name one task AI helps me with and one it shouldn't do.",
+      "sessions": [
+        {
+          "title": "What AI is, and what it isn't",
+          "learn": "AI tools predict likely words or images from patterns in their training. They can sound confident and still be wrong.",
+          "learn_ca": "AI tools predict likely words or images from patterns in their training. They can sound confident and still be wrong. The free national course, AI for All: Essentials for Canadians, covers this well if you want more.",
+          "try": "Ask an approved AI tool a question about your field that you already know the answer to. Note one thing it got right and one thing it got wrong or left vague.",
+          "reflect": "Where in my work would a confident but wrong answer cause the most trouble?"
+        },
+        {
+          "title": "Why AI gets things wrong",
+          "learn": "Common failures: made-up facts and sources, outdated information, bias picked up from training data, and answers that sound more certain than they should.",
+          "try": "Ask the same question three different ways. Compare the answers and note where they disagree.",
+          "reflect": "Which of these failures would be hardest for me to notice?"
+        },
+        {
+          "title": "Knowing when not to use AI",
+          "learn": "Some work should stay with people: decisions about people, anything confidential, and work where someone must be accountable for every word.",
+          "try": "List three tasks in your work where you would not use AI, and write one sentence on why for each.",
+          "try_executives": "Bring one 'what could go wrong' scenario to your next leadership meeting, and agree on a guardrail for it.",
+          "reflect": "What would I say to a colleague who asked me when AI isn't the right tool?"
+        }
+      ]
+    },
+    "explore": {
+      "goal": "I can find tasks in my work where AI helps, and tasks where it doesn't.",
+      "check": "I have tried AI on one real task and decided whether to keep using it there.",
+      "sessions": [
+        {
+          "title": "Spot the opportunities",
+          "learn": "AI tends to help most with drafting, summarizing, sorting, brainstorming and reformatting. It helps least where accuracy, judgment or relationships matter most.",
+          "try": "List the tasks you do in a typical week. Mark each one: could AI help, maybe, or no.",
+          "reflect": "Which task would save me the most time or stress if AI helped?"
+        },
+        {
+          "title": "Try one task from start to finish",
+          "learn": "A small, real trial teaches more than a demo. Pick one task, use an approved tool, and judge the result honestly.",
+          "try": "Use an approved tool on this task: {{task}}. Use made-up details in place of anything real or confidential.",
+          "reflect": "Was the result faster, better, or neither? What would I change next time?"
+        },
+        {
+          "title": "Share what you found",
+          "learn": "Wins and failures are both useful. Sharing them helps your team learn faster and keeps examples real.",
+          "try": "Share one thing that worked and one that didn't with a colleague or your team.",
+          "try_executives": "With your leadership team, pick two uses of AI worth trying, and agree on what guardrails each one needs.",
+          "reflect": "What did I learn from someone else's example?"
+        }
+      ]
+    },
+    "direct": {
+      "goal": "I can give an AI tool clear instructions and context to get a useful result.",
+      "check": "I get a usable first draft within three tries.",
+      "sessions": [
+        {
+          "title": "Give clear instructions",
+          "learn": "Good instructions cover five things: who the AI should act as, the task, the context, the format you want, and an example if you have one.",
+          "try": "Write a vague request for this task: {{task}}. Then rewrite it using all five parts, with made-up details. Compare the two results.",
+          "reflect": "Which of the five parts made the biggest difference?"
+        },
+        {
+          "title": "Improve the answer, don't settle",
+          "learn": "The first answer is a starting point. Follow-up requests like 'shorter', 'for a new employee' or 'what's missing?' often matter more than the first one.",
+          "try": "Take one result and improve it with three follow-up requests. Keep notes on what each one changed.",
+          "reflect": "When should I stop refining and do it myself?"
+        },
+        {
+          "title": "Build a reusable prompt",
+          "learn": "If you do a task often, a saved set of instructions makes results more consistent and easier to check.",
+          "try": "Write a reusable set of instructions for this task: {{task}}. Save it, and share it with a colleague to try.",
+          "reflect": "What would make this easy for someone else on my team to use?"
+        }
+      ]
+    },
+    "evaluate": {
+      "goal": "I check AI output before I use it, especially facts, figures, names and links.",
+      "check": "I found and fixed at least one error in AI output this month.",
+      "sessions": [
+        {
+          "title": "Check before you trust",
+          "learn": "Check the things AI most often gets wrong: facts, figures, names, quotes, dates and links. If it matters, confirm it in the original source.",
+          "try": "Ask an AI tool to summarize a public document you know well. Find anything it got wrong, left out or added.",
+          "reflect": "What did I almost miss?"
+        },
+        {
+          "title": "Spot made-up details",
+          "learn": "AI can invent sources, statistics and quotes that look real. A citation is not proof until you have opened it.",
+          "try": "Ask an AI tool for three statistics about your field, with sources. Check each one.",
+          "reflect": "How many held up? How will that change how I use AI answers?"
+        },
+        {
+          "title": "Make checking a habit",
+          "learn": "A short personal checklist turns checking into a habit instead of a chore.",
+          "try": "Write a three-to-five item checklist for AI output in your work. Use it on your next real AI-assisted task.",
+          "try_managers": "With your team, agree on what 'checked' means before AI-assisted work is shared, and write it down.",
+          "reflect": "What will remind me to use the checklist when I'm busy?"
+        }
+      ]
+    },
+    "responsible": {
+      "goal": "I know what never goes into an AI tool, and I use approved tools.",
+      "check": "I can find our AI policy and approved-tools list, and I haven't entered anything on the never list.",
+      "sessions": [
+        {
+          "title": "The data red lines",
+          "learn": "Never enter personal information about others, passwords or credentials, unreleased financials, trade secrets, or anything under a confidentiality agreement.",
+          "learn_ca": "Never enter personal information about others, passwords or credentials, unreleased financials, trade secrets, or anything under a confidentiality agreement. In Canada, privacy laws such as PIPEDA and provincial laws apply to personal information, including what goes into AI tools.",
+          "try": "Find your organization's AI policy and approved-tools list. Then sort six everyday items from your work into 'fine to use' and 'never'.",
+          "reflect": "Which item was hardest to decide, and who could I ask?"
+        },
+        {
+          "title": "Safe ways to get the help",
+          "learn": "You can often get the same help without the risky details: remove names, use placeholders, or describe the situation in general terms.",
+          "try": "Take this task: {{task}}. Rewrite what you would give the AI so that it contains nothing on the never list.",
+          "reflect": "Did removing the details change the quality of the help?"
+        },
+        {
+          "title": "Being open about AI use",
+          "learn": "Being open about when AI helped builds trust, and lets others check the work properly.",
+          "try": "Decide when you'll tell others that AI helped with your work, and write it as a personal rule.",
+          "try_managers": "Run a 15-minute team huddle to agree on three team rules for AI use. Write them down where everyone can see them.",
+          "reflect": "What would make it easy for people on my team to be open about AI use?"
+        }
+      ]
+    },
+    "build": {
+      "label": "Build with AI (beyond the framework)",
+      "goal": "I can build AI into tools and workflows with human review, testing and logging.",
+      "check": "Every AI feature I build has a named reviewer, test cases and a log.",
+      "sessions": [
+        {
+          "title": "Design for human review",
+          "learn": "Decide where a person checks AI output, and what happens when confidence is low or the stakes are high.",
+          "try": "Sketch one AI workflow you could build, and mark exactly where a person reviews the output.",
+          "reflect": "What would happen if nobody did the review?"
+        },
+        {
+          "title": "Test before you trust",
+          "learn": "AI features need test cases like any other code, including edge cases and inputs that should be refused.",
+          "try": "Write five test cases for your workflow, including two edge cases and one input it should refuse.",
+          "reflect": "Which test am I least sure it would pass?"
+        },
+        {
+          "title": "Log and govern",
+          "learn": "Light logging of inputs, outputs and errors makes AI work auditable. The NIST AI Risk Management Framework is a practical guide.",
+          "try": "Decide what your workflow should log, who reviews a sample each month, and who owns it.",
+          "reflect": "Who would I call if this workflow went wrong at 2 a.m.?"
+        }
+      ]
+    }
+  },
+  "self_assessment": {
+    "understand": "I can explain in my own words what AI tools are good at, and where they go wrong.",
+    "explore": "I can spot tasks in my own work where AI could help.",
+    "direct": "I can give an AI tool clear instructions and context to get a useful result.",
+    "evaluate": "I could spot a factual error in an AI-generated draft.",
+    "responsible": "I know which information should never go into an AI tool.",
+    "build": "I can build AI into a tool or workflow safely."
+  }
+}

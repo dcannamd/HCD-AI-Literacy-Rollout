@@ -15,6 +15,16 @@
       <p class="lead">Roll out AI literacy the human-centered way: bring people in first, practise safely, and measure what matters.</p>
     </header>
 
+    <section id="country-picker" class="country" aria-labelledby="country-heading">
+      <h2 id="country-heading">Where is your organization?</h2>
+      <p class="hint">This sets the AI literacy framework, resources and funding the planner shows. You can change it any time.</p>
+      <div class="actions">
+        <button type="button" data-country="CA" class="secondary">Canada</button>
+        <button type="button" data-country="US" class="secondary">United States</button>
+      </div>
+      <div id="framework-note" class="framework-note" hidden></div>
+    </section>
+
     <section aria-labelledby="steps-heading">
       <h2 id="steps-heading">The steps</h2>
       <ol id="modules" class="cards"></ol>
@@ -25,7 +35,39 @@
     </footer>
   </main>
 
+  <script src="/js/profile.js"></script>
+  <script src="/js/country.js"></script>
   <script>
+    const picker = document.getElementById('country-picker');
+    const note = document.getElementById('framework-note');
+
+    function showCountry() {
+      const code = HCDCountry.get();
+      picker.querySelectorAll('button[data-country]').forEach((b) => {
+        const on = b.dataset.country === code;
+        b.classList.toggle('secondary', !on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      if (!code) { note.hidden = true; return; }
+      HCDCountry.framework(code).then((fw) => {
+        note.hidden = false;
+        note.textContent = '';
+        const strong = document.createElement('strong');
+        strong.textContent = `${HCDCountry.LABELS[code]} version: ${fw.name}.`;
+        const p = document.createElement('p');
+        p.textContent = fw.status;
+        note.append(strong, p);
+      });
+    }
+
+    picker.addEventListener('click', (e) => {
+      const code = e.target.dataset && e.target.dataset.country;
+      if (!code) return;
+      HCDCountry.set(code);
+      showCountry();
+    });
+    showCountry();
+
     fetch('/modules.json')
       .then((r) => r.json())
       .then((modules) => {

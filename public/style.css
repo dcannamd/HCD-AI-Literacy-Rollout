@@ -75,3 +75,15 @@ button.secondary { background: transparent; color: var(--accent); }
   .document { border: none; padding: 0; margin: 0; }
   body { font-size: 11.5pt; }
 }
+
+/* Country picker */
+.country { margin-bottom: 40px; padding: 20px; border: 1px solid var(--line); border-radius: 12px; }
+.country h2 { margin-top: 0; font-size: 1.2rem; }
+.framework-note { margin-top: 16px; font-size: 0.95rem; }
+.framework-note p { margin: 6px 0 0; color: var(--muted); }
+
+/* Self-rating rows */
+.form label.rating { display: grid; grid-template-columns: 1fr 110px; gap: 12px; align-items: center; font-weight: 400; margin: 10px 0; }
+.form label.rating[hidden] { display: none; }
+.document h3 { font-size: 1.05rem; margin-top: 24px; }
+.document blockquote { margin: 0; padding: 8px 16px; border-left: 3px solid var(--accent); color: var(--muted); }
