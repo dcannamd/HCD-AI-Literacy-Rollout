@@ -1,0 +1,33 @@
+{
+  "source": "Role-tier literacy matrix from Devlin Peck's AI Literacy Rollout Kit (devlinpeck.com, free to share). Baseline = the shared foundation; deep = role-specific depth with hands-on practice.",
+  "tiers": {
+    "frontline": {
+      "label": "Frontline employees",
+      "format": "Short mobile-friendly modules, team huddles",
+      "depth": { "understand": "baseline", "explore": "baseline", "direct": "baseline", "evaluate": "deep", "responsible": "deep", "build": "none" }
+    },
+    "knowledge": {
+      "label": "Knowledge workers",
+      "format": "Hands-on workshops using real work samples",
+      "depth": { "understand": "baseline", "explore": "baseline", "direct": "deep", "evaluate": "deep", "responsible": "baseline", "build": "none" }
+    },
+    "managers": {
+      "label": "People managers",
+      "format": "Cohort sessions plus realistic practice conversations",
+      "depth": { "understand": "baseline", "explore": "baseline", "direct": "baseline", "evaluate": "deep", "responsible": "deep", "build": "none" },
+      "note": "Responsible use is taught as team norms."
+    },
+    "executives": {
+      "label": "Executives",
+      "format": "Executive briefings, scenario reviews with the leadership team",
+      "depth": { "understand": "deep", "explore": "deep", "direct": "baseline", "evaluate": "baseline", "responsible": "baseline", "build": "none" },
+      "note": "Start where the fear is: understanding when and why AI fails lets leaders set guardrails and move."
+    },
+    "builders": {
+      "label": "Technical builders",
+      "format": "Specialist courses, internal guilds",
+      "depth": { "understand": "deep", "explore": "deep", "direct": "deep", "evaluate": "deep", "responsible": "deep", "build": "deep" },
+      "note": "Plus engineering depth beyond the framework."
+    }
+  }
+}

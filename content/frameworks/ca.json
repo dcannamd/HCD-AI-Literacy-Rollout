@@ -1,0 +1,44 @@
+{
+  "country": "CA",
+  "name": "Canada's National AI Literacy Initiative (AI for All)",
+  "short": "AI for All: understand, use, build",
+  "status": "Canada has no official five-area employer rubric. This version is our mapping: the national Understand, Use, Build progression, with the five skill areas used in the role matrix placed inside it.",
+  "groups": [
+    {
+      "id": "understand",
+      "label": "Understand",
+      "description": "Assess AI-generated information, recognize risks such as bias, misinformation and privacy loss, and know when not to use AI.",
+      "areas": ["understand", "evaluate"]
+    },
+    {
+      "id": "use",
+      "label": "Use",
+      "description": "Apply AI confidently and responsibly in your work.",
+      "areas": ["explore", "direct", "responsible"]
+    },
+    {
+      "id": "build",
+      "label": "Build",
+      "description": "For those who choose: build with AI. Mainly technical builders.",
+      "areas": ["build"]
+    }
+  ],
+  "areas": {
+    "understand": { "label": "Understand how AI works, and when not to use it" },
+    "evaluate": { "label": "Evaluate AI outputs" },
+    "explore": { "label": "Explore AI uses in your work" },
+    "direct": { "label": "Direct AI effectively" },
+    "responsible": { "label": "Use AI responsibly, including privacy" },
+    "build": { "label": "Build with AI" }
+  },
+  "risk_framework": "NIST AI Risk Management Framework (widely used in Canada)",
+  "resources": [
+    { "label": "AI for All: Essentials for Canadians", "note": "Free national course, offered through community organizations from December 4, 2026, with open online access to follow" },
+    { "label": "Job Bank Training Finder", "note": "Short AI courses for workers and job seekers" },
+    { "label": "Canadian privacy law", "note": "Federal PIPEDA, plus provincial laws such as B.C.'s PIPA, apply to personal information entered into AI tools" }
+  ],
+  "sources": [
+    "https://www.canada.ca/en/innovation-science-economic-development/news/2026/09/government-of-canada-launches-national-ai-literacy-initiative.html",
+    "https://www.hrreporter.com/focus-areas/automation-ai/ottawa-launches-free-ai-training-program-targeting-1-million-canadians/394880"
+  ]
+}
