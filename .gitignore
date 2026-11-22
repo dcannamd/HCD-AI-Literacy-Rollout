@@ -1,0 +1,8 @@
+node_modules/
+.env
+.DS_Store
+npm-debug.log*
+
+# Generated search index (rebuilt on deploy)
+grants/store.json
+evals/results/

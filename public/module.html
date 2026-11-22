@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p><a href="/">&larr; All steps</a></p>
+    <header>
+      <p class="eyebrow" id="step"></p>
+      <h1 id="title">Loading…</h1>
+      <p class="lead" id="summary"></p>
+    </header>
+
+    <section class="placeholder">
+      <h2>Coming soon</h2>
+      <p>This module is being built in the open. Follow along on GitHub.</p>
+    </section>
+  </main>
+
+  <script>
+    const slug = location.pathname.replace(/^\/|\/$/g, '');
+    fetch('/modules.json')
+      .then((r) => r.json())
+      .then((modules) => {
+        const m = modules.find((x) => x.slug === slug);
+        if (!m) return;
+        document.title = m.title + ' · AI Literacy Rollout Planner';
+        document.getElementById('step').textContent = m.step;
+        document.getElementById('title').textContent = m.title;
+        document.getElementById('summary').textContent = m.summary;
+      });
+  </script>
+</body>
+</html>

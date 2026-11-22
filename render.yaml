@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: hcd-ai-literacy-rollout
+    runtime: node
+    plan: free # switch to "starter" (always on) before public launch
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: NOTION_TOKEN
+        sync: false
+      - key: NOTION_GRANTS_DATABASE_ID
+        sync: false

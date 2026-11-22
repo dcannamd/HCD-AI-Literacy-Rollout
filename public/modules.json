@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "promises",
+    "step": "Step 0",
+    "title": "Purpose and promises",
+    "summary": "Say what the program is for, and what it is not, before anything else."
+  },
+  {
+    "slug": "people",
+    "step": "Step 1",
+    "title": "Bring people in",
+    "summary": "An HR conversation script for building an accurate baseline together, and a personal learning plan each employee owns."
+  },
+  {
+    "slug": "practice",
+    "step": "Step 2",
+    "title": "Learn and practise",
+    "summary": "The shared core of AI literacy, and a safe sandbox for practising prompts with made-up data."
+  },
+  {
+    "slug": "funding",
+    "step": "Step 3",
+    "title": "Fund it",
+    "summary": "Find training grants that fit your organization, starting with B.C. and Canada."
+  },
+  {
+    "slug": "keep-going",
+    "step": "Step 4",
+    "title": "Keep it going",
+    "summary": "Office hours, champions, and a 90-day re-check everyone can see."
+  },
+  {
+    "slug": "documents",
+    "step": "Output",
+    "title": "Document generator",
+    "summary": "Generate the documents your rollout needs from your company profile."
+  }
+]

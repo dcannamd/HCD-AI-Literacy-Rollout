@@ -1,0 +1,20 @@
+{
+  "name": "hcd-ai-literacy-rollout",
+  "version": "0.1.0",
+  "description": "A free, open-source planner for rolling out AI literacy the human-centered way.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Dana Cannam",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2"
+  }
+}
