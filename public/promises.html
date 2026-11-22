@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Purpose and promises · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p class="no-print"><a href="/">&larr; All steps</a></p>
+    <header class="no-print">
+      <p class="eyebrow">Step 0</p>
+      <h1>Purpose and promises</h1>
+      <p class="lead">Before any survey, data or training, tell people what this program is for, and what it is not. Fill in the details and your statement updates as you type.</p>
+    </header>
+
+    <p class="notice no-print" id="profile-note"></p>
+
+    <form id="promises-form" class="form no-print">
+      <label>Why your organization is doing this, in your own words (optional)
+        <textarea name="purpose_note" rows="3" placeholder="e.g. We want everyone to feel confident with the tools, not left behind by them."></textarea>
+      </label>
+
+      <label>When the program starts (optional)
+        <input name="start_date" placeholder="e.g. January 2027">
+      </label>
+
+      <fieldset>
+        <legend>How will employees' information be handled?</legend>
+        <label class="inline"><input type="radio" name="data_level" value="browser" checked> Stays on each person's device. We collect nothing.</label>
+        <label class="inline"><input type="radio" name="data_level" value="anonymous"> Anonymous team results, shown only for groups of 5 or more</label>
+        <label class="inline"><input type="radio" name="data_level" value="self-hosted"> Everything runs on our own systems</label>
+      </fieldset>
+
+      <label>Where people can find the AI policy (optional)
+        <input name="policy_link" placeholder="e.g. the HR page on the intranet">
+      </label>
+
+      <label>Who people can ask questions
+        <input name="contact" placeholder="e.g. the People and Culture team">
+      </label>
+
+      <label>Who signs it
+        <input name="signed_by" placeholder="e.g. Our executive director, HR lead and an employee representative">
+        <span class="hint">Trusted voices matter. Include HR and a peer, not only leadership.</span>
+      </label>
+    </form>
+
+    <div class="actions no-print">
+      <button type="button" id="copy">Copy text</button>
+      <button type="button" id="download" class="secondary">Download (.md)</button>
+      <button type="button" id="print" class="secondary">Print or save as PDF</button>
+    </div>
+    <p id="status" role="status" class="status no-print"></p>
+
+    <article id="preview" class="document" aria-label="Your purpose and promises statement"></article>
+  </main>
+
+  <script src="/vendor/marked.min.js"></script>
+  <script src="/js/template.js"></script>
+  <script src="/js/profile.js"></script>
+  <script>
+    const T = HCDTemplate;
+    const form = document.getElementById('promises-form');
+    const preview = document.getElementById('preview');
+    const status = document.getElementById('status');
+    const DRAFT_KEY = 'hcd-promises-v1';
+    let template = '';
+    let lastMarkdown = '';
+
+    const DATA = {
+      browser: {
+        promise: 'Your personal learning plan and practice stay on your own device. We do not collect them.',
+        detail: 'Your plan and any practice you do stay in your own browser. We do not see them, and you can delete them at any time.'
+      },
+      anonymous: {
+        promise: 'We only ever see anonymous team results, never individual answers, and only for groups of 5 or more.',
+        detail: 'Your plan stays on your own device. If you choose to add to the team baseline, you join with a team code, not your name, and only scores and multiple-choice answers are shared. Results are shown only for groups of 5 or more, so no one can be singled out.'
+      },
+      'self-hosted': {
+        promise: 'Any information about the program stays on our own systems, and is only ever reported as team totals.',
+        detail: 'The program runs on our own systems, so your information does not leave the organization. It is reported only as team totals, never as individual answers.'
+      }
+    };
+
+    const profile = HCDProfile.load();
+    document.getElementById('profile-note').innerHTML = profile.org_name
+      ? 'Using your organization details. <a href="/profile">Edit them</a>.'
+      : 'Add your organization details first to fill in more of this statement. <a href="/profile">Add them</a>.';
+
+    try {
+      HCDProfile.fillForm(form, JSON.parse(localStorage.getItem(DRAFT_KEY)) || {});
+    } catch (e) { /* no saved draft */ }
+
+    function buildData() {
+      const f = HCDProfile.readForm(form);
+      const level = DATA[f.data_level] || DATA.browser;
+      const tiers = HCDProfile.ROLE_TIERS
+        .filter((t) => (profile.role_tiers || []).includes(t.id))
+        .map((t) => t.label);
+      return {
+        org_name: profile.org_name,
+        today: new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' }),
+        role_tiers: T.joinList(tiers),
+        union: profile.union === 'yes',
+        union_name: profile.union_name || 'our union',
+        approved_tools: profile.approved_tools,
+        languages: profile.languages,
+        purpose_note: f.purpose_note,
+        start_date: f.start_date,
+        data_promise: level.promise,
+        data_detail: level.detail,
+        policy_line: f.policy_link
+          ? `You can find the AI policy at ${f.policy_link}.`
+          : 'We will publish an AI policy and an approved-tools list before training starts, and tell everyone where to find them.',
+        contact: f.contact,
+        signed_by: f.signed_by
+      };
+    }
+
+    function update() {
+      if (!template) return;
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(HCDProfile.readForm(form)));
+      } catch (e) { /* storage unavailable */ }
+      lastMarkdown = T.render(template, buildData());
+      // Values are HTML-escaped by the template engine before markdown is parsed.
+      preview.innerHTML = marked.parse(lastMarkdown);
+    }
+
+    // The downloaded file is plain text, so undo the HTML escaping for it.
+    function plainText() {
+      return lastMarkdown.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+    }
+
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+
+    document.getElementById('copy').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(plainText());
+        status.textContent = 'Copied. Paste it into an email, document or intranet page.';
+      } catch (e) {
+        status.textContent = "Your browser blocked copying. Use Download instead.";
+      }
+    });
+
+    document.getElementById('download').addEventListener('click', () => {
+      const blob = new Blob([plainText()], { type: 'text/markdown' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'purpose-and-promises.md';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    document.getElementById('print').addEventListener('click', () => window.print());
+
+    fetch('/templates/purpose-and-promises.md')
+      .then((r) => r.text())
+      .then((text) => { template = text; update(); });
+  </script>
+</body>
+</html>

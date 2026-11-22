@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your organization · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p><a href="/">&larr; All steps</a></p>
+    <header>
+      <p class="eyebrow">Start here</p>
+      <h1>Your organization</h1>
+      <p class="lead">Tell us about your organization once. Every step uses it to tailor your documents.</p>
+    </header>
+
+    <p class="notice">Your answers are saved only in this browser. Nothing is sent to our server.</p>
+
+    <form id="profile-form" class="form">
+      <label>Organization name
+        <input name="org_name" autocomplete="organization" required>
+      </label>
+
+      <fieldset>
+        <legend>Type of organization</legend>
+        <label class="inline"><input type="radio" name="org_type" value="business"> Business</label>
+        <label class="inline"><input type="radio" name="org_type" value="nonprofit"> Nonprofit or charity</label>
+        <label class="inline"><input type="radio" name="org_type" value="public"> Public body</label>
+        <label class="inline"><input type="radio" name="org_type" value="first-nation"> First Nation</label>
+      </fieldset>
+
+      <div class="row">
+        <label>Country
+          <select name="country">
+            <option value="">Choose…</option>
+            <option value="CA">Canada</option>
+            <option value="US">United States</option>
+          </select>
+        </label>
+        <label>Province or state
+          <input name="region" placeholder="e.g. British Columbia">
+        </label>
+      </div>
+
+      <label>Number of employees
+        <select name="size">
+          <option value="">Choose…</option>
+          <option value="1-49">1 to 49</option>
+          <option value="50-249">50 to 249</option>
+          <option value="250-999">250 to 999</option>
+          <option value="1000+">1,000 or more</option>
+        </select>
+      </label>
+
+      <fieldset>
+        <legend>Which groups work at your organization?</legend>
+        <label class="inline"><input type="checkbox" name="role_tiers" value="frontline"> Frontline employees</label>
+        <label class="inline"><input type="checkbox" name="role_tiers" value="knowledge"> Knowledge workers</label>
+        <label class="inline"><input type="checkbox" name="role_tiers" value="managers"> People managers</label>
+        <label class="inline"><input type="checkbox" name="role_tiers" value="executives"> Executives</label>
+        <label class="inline"><input type="checkbox" name="role_tiers" value="builders"> Technical builders</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Is there a union or employee association?</legend>
+        <label class="inline"><input type="radio" name="union" value="yes"> Yes</label>
+        <label class="inline"><input type="radio" name="union" value="no"> No</label>
+        <label>Its name (optional)
+          <input name="union_name" placeholder="e.g. BCGEU Local 1">
+        </label>
+      </fieldset>
+
+      <label>AI tools currently approved for work (optional)
+        <input name="approved_tools" placeholder="e.g. Gemini, Microsoft Copilot">
+      </label>
+
+      <label>Languages your staff work in, other than English (optional)
+        <input name="languages" placeholder="e.g. French, Punjabi">
+      </label>
+
+      <div class="actions">
+        <button type="submit">Save</button>
+        <button type="button" id="clear" class="secondary">Clear my answers</button>
+      </div>
+      <p id="status" role="status" class="status"></p>
+    </form>
+
+    <p class="next"><a href="/promises">Next: write your purpose and promises &rarr;</a></p>
+  </main>
+
+  <script src="/js/profile.js"></script>
+  <script>
+    const form = document.getElementById('profile-form');
+    const status = document.getElementById('status');
+    HCDProfile.fillForm(form, HCDProfile.load());
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const ok = HCDProfile.save(HCDProfile.readForm(form));
+      status.textContent = ok
+        ? 'Saved in this browser.'
+        : "This browser won't let us save. Your answers will last until you close the page.";
+    });
+
+    document.getElementById('clear').addEventListener('click', () => {
+      HCDProfile.clear();
+      form.reset();
+      status.textContent = 'Your answers were cleared from this browser.';
+    });
+  </script>
+</body>
+</html>

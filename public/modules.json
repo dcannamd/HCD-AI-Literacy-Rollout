@@ -1,9 +1,15 @@
 [
   {
+    "slug": "profile",
+    "step": "Start here",
+    "title": "Your organization",
+    "summary": "Tell us about your organization once. Every step uses it to tailor your documents."
+  },
+  {
     "slug": "promises",
     "step": "Step 0",
     "title": "Purpose and promises",
-    "summary": "Say what the program is for, and what it is not, before anything else."
+    "summary": "Write a statement of what the program is for, and what it is not, before anything else."
   },
   {
     "slug": "people",
