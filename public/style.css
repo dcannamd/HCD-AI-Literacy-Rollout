@@ -87,3 +87,35 @@ button.secondary { background: transparent; color: var(--accent); }
 .form label.rating[hidden] { display: none; }
 .document h3 { font-size: 1.05rem; margin-top: 24px; }
 .document blockquote { margin: 0; padding: 8px 16px; border-left: 3px solid var(--accent); color: var(--muted); }
+
+/* Practice sandbox */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.tabs button { font-size: 0.95rem; }
+.exercise h2 { margin-top: 0; }
+.field { display: grid; gap: 6px; font-weight: 600; margin: 12px 0; }
+.field select, #prompt-text { font: inherit; padding: 10px 12px; border: 1px solid #c9c9c9; border-radius: 8px; width: 100%; }
+.notes { background: #f6f6f4; border-radius: 10px; padding: 12px 16px; margin: 12px 0; }
+.notes-label { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin: 0 0 4px; }
+.notes p:last-child { margin-bottom: 0; }
+.feedback { margin: 16px 0; }
+.feedback.warn { border-left: 4px solid #c0392b; padding-left: 14px; }
+.feedback.ok { border-left: 4px solid #1e8e3e; padding-left: 14px; }
+.feedback .summary { font-weight: 600; }
+.feedback code { background: #fdecea; padding: 1px 4px; border-radius: 4px; }
+.parts { list-style: none; padding: 0; }
+.parts li { margin: 6px 0; }
+.parts li.present .mark { color: #1e8e3e; }
+.parts li.missing { color: var(--muted); }
+.parts li.missing strong { color: var(--ink); }
+.handoff { margin-top: 24px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; }
+.handoff h3 { margin-top: 0; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+.sentences { display: grid; gap: 8px; margin: 12px 0; }
+.sentence { text-align: left; font-weight: 400; background: #fff; color: var(--ink); border: 1px solid var(--line); }
+.sentence[aria-pressed=true] { border-color: #c0392b; background: #fdecea; }
+.compare { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; margin: 12px 0; }
+@media (max-width: 640px) { .compare { grid-template-columns: 1fr; } }
+.option { border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.option h3 { margin: 0 0 8px; }
+.option pre { white-space: pre-wrap; font: inherit; background: #f6f6f4; padding: 10px; border-radius: 8px; }
+.prompt-text { font-family: ui-monospace, Menlo, monospace; font-size: 0.9rem; }

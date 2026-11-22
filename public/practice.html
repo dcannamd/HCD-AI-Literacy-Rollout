@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Practice sandbox · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p><a href="/">&larr; All steps</a></p>
+    <header>
+      <p class="eyebrow">Step 2</p>
+      <h1>Practice sandbox</h1>
+      <p class="lead">Practise the skills that matter most, with made-up scenarios and instant feedback. Each exercise takes about 10 minutes.</p>
+    </header>
+
+    <p class="notice">No AI runs on this page, and nothing you type leaves your device. Mistakes here are free: that's the point.</p>
+
+    <nav class="tabs" aria-label="Exercises">
+      <button type="button" data-tab="prompt" aria-pressed="true">1. Write a safe, clear prompt</button>
+      <button type="button" data-tab="spot" aria-pressed="false" class="secondary">2. Spot the error</button>
+      <button type="button" data-tab="compare" aria-pressed="false" class="secondary">3. Which prompt works better?</button>
+    </nav>
+
+    <!-- Exercise 1 -->
+    <section id="tab-prompt" class="exercise" aria-labelledby="h-prompt">
+      <h2 id="h-prompt">Write a safe, clear prompt</h2>
+      <label class="field">Scenario <select id="prompt-scenario"></select></label>
+      <p id="prompt-situation"></p>
+      <div class="notes">
+        <p class="notes-label" id="prompt-notes-label"></p>
+        <p id="prompt-notes"></p>
+      </div>
+      <label class="field" for="prompt-text">Your instructions for the AI</label>
+      <textarea id="prompt-text" rows="6"></textarea>
+
+      <div id="redlines" class="feedback" aria-live="polite"></div>
+
+      <div class="feedback">
+        <p id="prompt-summary" class="summary" aria-live="polite"></p>
+        <ul id="prompt-parts" class="parts"></ul>
+      </div>
+
+      <div class="handoff">
+        <h3>Try it for real</h3>
+        <p id="handoff-text"></p>
+        <div class="actions">
+          <button type="button" id="copy-prompt">Copy my prompt</button>
+        </div>
+        <p id="copy-status" role="status" class="status"></p>
+      </div>
+    </section>
+
+    <!-- Exercise 2 -->
+    <section id="tab-spot" class="exercise" aria-labelledby="h-spot" hidden>
+      <h2 id="h-spot">Spot the error</h2>
+      <label class="field">Scenario <select id="spot-scenario"></select></label>
+      <div class="notes">
+        <p class="notes-label" id="spot-source-label"></p>
+        <p id="spot-source"></p>
+      </div>
+      <p><strong>Someone asked an AI:</strong> <span id="spot-prompt"></span></p>
+      <p class="hint">Tap every sentence you wouldn't trust without checking. Then check your answers.</p>
+      <div id="spot-sentences" class="sentences"></div>
+      <div class="actions">
+        <button type="button" id="spot-check">Check my answers</button>
+        <button type="button" id="spot-reset" class="secondary">Start again</button>
+      </div>
+      <div id="spot-results" class="feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- Exercise 3 -->
+    <section id="tab-compare" class="exercise" aria-labelledby="h-compare" hidden>
+      <h2 id="h-compare">Which prompt works better?</h2>
+      <label class="field">Scenario <select id="compare-scenario"></select></label>
+      <div class="compare">
+        <div class="option" id="option-a"></div>
+        <div class="option" id="option-b"></div>
+      </div>
+      <div class="actions">
+        <button type="button" data-pick="a">A works better</button>
+        <button type="button" data-pick="b">B works better</button>
+      </div>
+      <div id="compare-result" class="feedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="/js/profile.js"></script>
+  <script src="/js/country.js"></script>
+  <script src="/js/sandbox.js"></script>
+  <script>
+    const S = HCDSandbox;
+    const $ = (id) => document.getElementById(id);
+    const el = (tag, text, cls) => {
+      const n = document.createElement(tag);
+      if (text !== undefined) n.textContent = text;
+      if (cls) n.className = cls;
+      return n;
+    };
+    const country = HCDCountry.get() || 'US';
+    const profile = HCDProfile.load();
+
+    // Tabs
+    document.querySelectorAll('[data-tab]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-tab]').forEach((b) => {
+          const on = b === btn;
+          b.setAttribute('aria-pressed', on);
+          b.classList.toggle('secondary', !on);
+          $(`tab-${b.dataset.tab}`).hidden = !on;
+        });
+      });
+    });
+
+    function fillSelect(select, items, onChange) {
+      items.forEach((s, i) => select.append(new Option(s.title, i)));
+      select.addEventListener('change', () => onChange(items[select.value]));
+      onChange(items[0]);
+    }
+
+    fetch('/sandbox/scenarios.json').then((r) => r.json()).then((data) => {
+      // ---------- Exercise 1: prompt + red lines ----------
+      let current;
+      const text = $('prompt-text');
+
+      function checkPrompt() {
+        const value = text.value;
+        const lines = S.detectRedLines(value, { country, names: current.names, secrets: current.secrets });
+        const box = $('redlines');
+        box.textContent = '';
+        if (lines.length) {
+          box.className = 'feedback warn';
+          box.append(el('p', `Remove ${lines.length === 1 ? 'this' : 'these'} before you use any AI tool:`, 'summary'));
+          const ul = el('ul');
+          lines.forEach((l) => {
+            const li = el('li');
+            li.append(el('strong', `${l.kind}: `), el('code', l.text), el('span', ` ${l.why}`));
+            ul.append(li);
+          });
+          box.append(ul);
+        } else if (value.trim()) {
+          box.className = 'feedback ok';
+          box.append(el('p', 'No red lines found. Nothing personal or confidential in your prompt.', 'summary'));
+        } else {
+          box.className = 'feedback';
+        }
+
+        const result = S.checkPrompt(value);
+        $('prompt-summary').textContent = `${result.score} of 5 parts. ${result.summary}`;
+        const list = $('prompt-parts');
+        list.textContent = '';
+        result.parts.forEach((p) => {
+          const li = el('li', undefined, p.present ? 'present' : 'missing');
+          li.append(el('span', p.present ? '✓ ' : '○ ', 'mark'), el('strong', p.label));
+          if (!p.present) li.append(el('span', ` · ${p.tip}`));
+          list.append(li);
+        });
+
+        const copy = $('copy-prompt');
+        copy.disabled = lines.length > 0 || !value.trim();
+        copy.title = lines.length ? 'Remove the red-line items first' : '';
+      }
+
+      fillSelect($('prompt-scenario'), data.prompt, (s) => {
+        current = s;
+        $('prompt-situation').textContent = s.situation;
+        $('prompt-notes-label').textContent = `${s.notes_label} (made up). Don't copy these as they are.`;
+        $('prompt-notes').textContent = s.notes;
+        text.value = s.starter;
+        checkPrompt();
+      });
+      text.addEventListener('input', checkPrompt);
+
+      const tools = profile.approved_tools;
+      $('handoff-text').textContent = tools
+        ? `When your prompt has no red lines, copy it and try it in an approved tool: ${tools}. Then compare the answer with what you expected.`
+        : "When your prompt has no red lines, copy it and try it in your organization's approved AI tool. Then compare the answer with what you expected.";
+
+      $('copy-prompt').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(text.value);
+          $('copy-status').textContent = 'Copied. Open your approved AI tool and paste it in.';
+        } catch (e) {
+          $('copy-status').textContent = 'Your browser blocked copying. Select the text and copy it yourself.';
+        }
+      });
+
+      // ---------- Exercise 2: spot the error ----------
+      let spot;
+      function renderSpot(s) {
+        spot = s;
+        $('spot-source-label').textContent = s.source_label;
+        $('spot-source').textContent = s.source;
+        $('spot-prompt').textContent = s.prompt;
+        $('spot-results').textContent = '';
+        $('spot-results').className = 'feedback';
+        const box = $('spot-sentences');
+        box.textContent = '';
+        s.sentences.forEach((sent) => {
+          const b = el('button', sent.text, 'sentence');
+          b.type = 'button';
+          b.dataset.id = sent.id;
+          b.setAttribute('aria-pressed', 'false');
+          b.addEventListener('click', () => {
+            b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+          });
+          box.append(b);
+        });
+      }
+      fillSelect($('spot-scenario'), data.spot, renderSpot);
+      $('spot-reset').addEventListener('click', () => renderSpot(spot));
+      $('spot-check').addEventListener('click', () => {
+        const flagged = [...document.querySelectorAll('.sentence[aria-pressed=true]')].map((b) => b.dataset.id);
+        const r = S.scoreFlags(spot.sentences, flagged);
+        const box = $('spot-results');
+        box.textContent = '';
+        box.className = r.missed.length ? 'feedback warn' : 'feedback ok';
+        box.append(el('p', `You caught ${r.caught.length} of ${r.total} errors.`, 'summary'));
+        const section = (title, items) => {
+          if (!items.length) return;
+          box.append(el('h3', title));
+          const ul = el('ul');
+          items.forEach((i) => {
+            const li = el('li');
+            li.append(el('em', `"${i.text}" `), el('span', i.why || 'This one checks out against the source.'));
+            ul.append(li);
+          });
+          box.append(ul);
+        };
+        section('Caught', r.caught);
+        section('Missed', r.missed);
+        section('Flagged but fine', r.falseAlarms);
+        box.append(el('p', 'Flagging something that turns out to be fine is not a failure. Checking is the habit we want.', 'hint'));
+      });
+
+      // ---------- Exercise 3: compare ----------
+      let cmp;
+      function renderOption(id, label, opt) {
+        const box = $(id);
+        box.textContent = '';
+        box.append(el('h3', `Prompt ${label}`), el('p', opt.prompt, 'prompt-text'), el('p', 'What the AI wrote:', 'notes-label'), el('pre', opt.output));
+      }
+      fillSelect($('compare-scenario'), data.compare, (c) => {
+        cmp = c;
+        renderOption('option-a', 'A', c.a);
+        renderOption('option-b', 'B', c.b);
+        $('compare-result').textContent = '';
+        $('compare-result').className = 'feedback';
+      });
+      document.querySelectorAll('[data-pick]').forEach((b) => {
+        b.addEventListener('click', () => {
+          const right = b.dataset.pick === cmp.better;
+          const box = $('compare-result');
+          box.className = right ? 'feedback ok' : 'feedback warn';
+          box.textContent = '';
+          box.append(el('p', right ? 'Yes.' : `Not quite: prompt ${cmp.better.toUpperCase()} works better.`, 'summary'), el('p', cmp.why));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
