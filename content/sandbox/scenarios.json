@@ -1,0 +1,74 @@
+{
+  "note": "All people, organizations and details in these scenarios are made up. Edit or add scenarios here; the practice page reads this file.",
+  "prompt": [
+    {
+      "id": "client-email",
+      "title": "Follow up with a client",
+      "roles": ["frontline", "knowledge"],
+      "situation": "You work at Harbourview Community Services. A client missed their appointment this morning and you want to send a kind follow-up email offering a new time.",
+      "notes_label": "Your notes from the client file",
+      "notes": "Priya Sandhu, priya.sandhu@example.com, 250-555-0143. Missed 10:00 housing support appt. SIN on file 046 454 286. Has said mornings are hard because of childcare.",
+      "names": ["Priya Sandhu", "Priya", "Sandhu"],
+      "secrets": [],
+      "starter": "write an email to priya"
+    },
+    {
+      "id": "team-update",
+      "title": "Write a team update",
+      "roles": ["managers", "knowledge", "executives"],
+      "situation": "You lead a small team at Northwind Outfitters. You need to tell your team about a schedule change without causing worry.",
+      "notes_label": "What you know",
+      "notes": "Confidential: Q3 numbers down 12%, store 14 may close. Schedule change: Saturday shifts move to 9:00 to 5:00 starting March 1. Tom Okafor is covering the Saturday lead role.",
+      "names": ["Tom Okafor", "Okafor"],
+      "secrets": ["Q3 numbers down 12%", "store 14 may close"],
+      "starter": "tell my team about the new saturday hours"
+    }
+  ],
+  "spot": [
+    {
+      "id": "expense-policy",
+      "title": "Check an AI summary of a policy",
+      "source_label": "The real policy (excerpt)",
+      "source": "Volunteer Expense Policy, Harbourview Community Services, updated January 2026. Volunteers may claim mileage at 61 cents per kilometre for approved trips. Claims must be submitted within 30 days of the trip, with a completed claim form. Meals are not reimbursed, except on approved trips longer than 6 hours, up to $20 per day. Questions go to the volunteer coordinator.",
+      "prompt": "Summarize our volunteer expense policy in four sentences.",
+      "sentences": [
+        { "id": "a", "text": "Volunteers can claim mileage at 61 cents per kilometre for approved trips." },
+        { "id": "b", "text": "Claims must be submitted within 60 days, along with a completed claim form.", "error": true, "why": "The policy says 30 days, not 60. A wrong deadline could cost a volunteer their reimbursement." },
+        { "id": "c", "text": "Meals are reimbursed up to $20 per day on approved trips longer than 6 hours." },
+        { "id": "d", "text": "Parking and ferry fares are also covered in full, with receipts.", "error": true, "why": "The policy never mentions parking or ferries. The AI invented a rule that sounds reasonable, which is exactly the kind of error that's easy to miss." },
+        { "id": "e", "text": "Questions about the policy should go to the finance department.", "error": true, "why": "The policy says the volunteer coordinator, not finance. Small detail, but it sends people to the wrong place." }
+      ]
+    },
+    {
+      "id": "stats",
+      "title": "Check statistics and sources",
+      "source_label": "What you know",
+      "source": "You asked an AI tool for facts to include in a funding proposal about digital skills. You haven't checked anything yet.",
+      "prompt": "Give me three statistics about AI use at work, with sources.",
+      "sentences": [
+        { "id": "a", "text": "Many employees already use AI tools at work, including tools their employer hasn't approved.", "error": false, "why": "This is a general claim rather than a statistic. It's widely reported, but you'd still want a real source before putting it in a proposal." },
+        { "id": "b", "text": "Exactly 73.4% of Canadian nonprofits used AI in 2025, according to the Canadian Nonprofit Technology Census.", "error": true, "why": "Very precise numbers with an official-sounding source are a warning sign. This survey name was invented: always open the source before you use a figure." },
+        { "id": "c", "text": "A 2024 Harvard study found that AI improves every worker's productivity by 40%.", "error": true, "why": "'Every worker' and a single round number oversimplify. Real studies report ranges, conditions and some tasks where AI made people worse. Check what the study actually says." },
+        { "id": "d", "text": "Before using any statistic, open the original source and confirm the number and date.", "error": false, "why": "Good advice, and true." }
+      ]
+    }
+  ],
+  "compare": [
+    {
+      "id": "handover",
+      "title": "Shift handover notes",
+      "a": { "prompt": "write handover notes", "output": "Here are some handover notes:\n- Everything went fine today.\n- Please check on things.\n- Let me know if you have questions." },
+      "b": { "prompt": "You are an experienced shift supervisor at a care home. Turn my notes below into handover notes for the evening team. Use three short headings: Residents, Tasks still open, Watch for. Plain language, under 120 words. My notes: [notes with names replaced by room numbers]", "output": "Residents\n- Room 4: ate well, asked about family visit tomorrow.\n- Room 9: unsettled after lunch, settled by 3 p.m.\n\nTasks still open\n- Room 12 medication review: waiting for pharmacy call-back.\n\nWatch for\n- Room 9: if unsettled again, follow the calming plan in the care file." },
+      "better": "b",
+      "why": "Prompt B gives a role, the task, the context (evening team), a clear format and a word limit, and it uses room numbers instead of names. Prompt A gives the AI nothing to work with, so it fills the gap with vague filler."
+    },
+    {
+      "id": "job-post",
+      "title": "A volunteer recruitment post",
+      "a": { "prompt": "You are a volunteer coordinator at a community food bank. Write a short, warm social media post recruiting weekend volunteers for our Saturday sorting shifts (9 to 12). Our readers are local families and students. Under 60 words, end with how to sign up: visit our website. Example of our tone: \"Small hands, big difference!\"", "output": "Got Saturday mornings free? Join our weekend sorting crew from 9 to 12 and help get fresh food to local families. Students and families welcome: small hands, big difference! Sign up on our website." },
+      "b": { "prompt": "Write a post to get volunteers. Make it good.", "output": "Are you looking for a rewarding opportunity to give back? We are seeking passionate, dedicated volunteers to join our dynamic team and make a meaningful impact in the community. Apply today!" },
+      "better": "a",
+      "why": "Prompt A sets the role, the audience, the details (Saturday, 9 to 12), the length and an example of the tone, so the result sounds like the organization. Prompt B gets generic recruiting language that could belong to anyone."
+    }
+  ]
+}

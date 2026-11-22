@@ -32,7 +32,7 @@ Suggested format for my role: {{tier_formats}}.{{#if formats}} I learn best thro
 {{tier_notes}}
 {{/if}}
 
-**Practise safely:** use made-up details in every exercise, never real names, customer information or confidential material.
+**Practise safely:** use made-up details in every exercise, never real names, customer information or confidential material. The practice sandbox (/practice) checks your prompts for this and gives instant feedback, without any AI.
 
 ## Week by week
 
