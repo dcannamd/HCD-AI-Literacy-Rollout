@@ -60,15 +60,8 @@
   <script src="/vendor/marked.min.js"></script>
   <script src="/js/template.js"></script>
   <script src="/js/profile.js"></script>
+  <script src="/js/generator.js"></script>
   <script>
-    const T = HCDTemplate;
-    const form = document.getElementById('promises-form');
-    const preview = document.getElementById('preview');
-    const status = document.getElementById('status');
-    const DRAFT_KEY = 'hcd-promises-v1';
-    let template = '';
-    let lastMarkdown = '';
-
     const DATA = {
       browser: {
         promise: 'Your personal learning plan and practice stay on your own device. We do not collect them.',
@@ -84,82 +77,36 @@
       }
     };
 
-    const profile = HCDProfile.load();
-    document.getElementById('profile-note').innerHTML = profile.org_name
-      ? 'Using your organization details. <a href="/profile">Edit them</a>.'
-      : 'Add your organization details first to fill in more of this statement. <a href="/profile">Add them</a>.';
-
-    try {
-      HCDProfile.fillForm(form, JSON.parse(localStorage.getItem(DRAFT_KEY)) || {});
-    } catch (e) { /* no saved draft */ }
-
-    function buildData() {
-      const f = HCDProfile.readForm(form);
-      const level = DATA[f.data_level] || DATA.browser;
-      const tiers = HCDProfile.ROLE_TIERS
-        .filter((t) => (profile.role_tiers || []).includes(t.id))
-        .map((t) => t.label);
-      return {
-        org_name: profile.org_name,
-        today: new Date().toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' }),
-        role_tiers: T.joinList(tiers),
-        union: profile.union === 'yes',
-        union_name: profile.union_name || 'our union',
-        approved_tools: profile.approved_tools,
-        languages: profile.languages,
-        purpose_note: f.purpose_note,
-        start_date: f.start_date,
-        data_promise: level.promise,
-        data_detail: level.detail,
-        policy_line: f.policy_link
-          ? `You can find the AI policy at ${f.policy_link}.`
-          : 'We will publish an AI policy and an approved-tools list before training starts, and tell everyone where to find them.',
-        contact: f.contact,
-        signed_by: f.signed_by
-      };
-    }
-
-    function update() {
-      if (!template) return;
-      try {
-        localStorage.setItem(DRAFT_KEY, JSON.stringify(HCDProfile.readForm(form)));
-      } catch (e) { /* storage unavailable */ }
-      lastMarkdown = T.render(template, buildData());
-      // Values are HTML-escaped by the template engine before markdown is parsed.
-      preview.innerHTML = marked.parse(lastMarkdown);
-    }
-
-    // The downloaded file is plain text, so undo the HTML escaping for it.
-    function plainText() {
-      return lastMarkdown.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-    }
-
-    form.addEventListener('input', update);
-    form.addEventListener('change', update);
-
-    document.getElementById('copy').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(plainText());
-        status.textContent = 'Copied. Paste it into an email, document or intranet page.';
-      } catch (e) {
-        status.textContent = "Your browser blocked copying. Use Download instead.";
+    HCDGenerator.setup({
+      formId: 'promises-form',
+      draftKey: 'hcd-promises-v1',
+      templateUrl: '/templates/purpose-and-promises.md',
+      filename: 'purpose-and-promises.md',
+      buildData: (f, profile) => {
+        const level = DATA[f.data_level] || DATA.browser;
+        const tiers = HCDProfile.ROLE_TIERS
+          .filter((t) => (profile.role_tiers || []).includes(t.id))
+          .map((t) => t.label);
+        return {
+          org_name: profile.org_name,
+          today: HCDGenerator.today(),
+          role_tiers: HCDTemplate.joinList(tiers),
+          union: profile.union === 'yes',
+          union_name: profile.union_name || 'our union',
+          approved_tools: profile.approved_tools,
+          languages: profile.languages,
+          purpose_note: f.purpose_note,
+          start_date: f.start_date,
+          data_promise: level.promise,
+          data_detail: level.detail,
+          policy_line: f.policy_link
+            ? `You can find the AI policy at ${f.policy_link}.`
+            : 'We will publish an AI policy and an approved-tools list before training starts, and tell everyone where to find them.',
+          contact: f.contact,
+          signed_by: f.signed_by
+        };
       }
     });
-
-    document.getElementById('download').addEventListener('click', () => {
-      const blob = new Blob([plainText()], { type: 'text/markdown' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'purpose-and-promises.md';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    });
-
-    document.getElementById('print').addEventListener('click', () => window.print());
-
-    fetch('/templates/purpose-and-promises.md')
-      .then((r) => r.text())
-      .then((text) => { template = text; update(); });
   </script>
 </body>
 </html>

@@ -45,3 +45,19 @@ test('the purpose and promises template renders with no leftover tags', () => {
   assert.ok(!/\{\{|\}\}/.test(empty));
   assert.ok(!empty.includes('CUPE'));
 });
+
+test('the HR conversation script drops unchosen data sources and keeps the table intact', () => {
+  const tpl = fs.readFileSync(path.join(__dirname, '../content/templates/hr-conversation-script.md'), 'utf8');
+  const out = render(tpl, {
+    org_name: 'Comox Valley Food Bank', today: 'today', hr_lead: 'Our HR manager', it_contact: 'IT',
+    employee_reps: 'Reps', src_usage: true, src_survey: true, results_date: 'February 9'
+  });
+  assert.ok(!/\{\{|\}\}/.test(out));
+  assert.ok(out.includes('Tool usage, grouped by team'));
+  assert.ok(!out.includes('expense reports show'));
+  assert.ok(out.includes('By February 9, share'));
+  const table = out.split('\n').filter((l) => l.startsWith('|'));
+  assert.strictEqual(table.length, 5, 'header, divider, two chosen rows and the closing row');
+  const none = render(tpl, { no_results_date: true });
+  assert.ok(none.includes('\nShare a team-level summary'));
+});

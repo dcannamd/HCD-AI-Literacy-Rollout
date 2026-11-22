@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bring people in · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p class="no-print"><a href="/">&larr; All steps</a></p>
+    <header class="no-print">
+      <p class="eyebrow">Step 1</p>
+      <h1>Build your baseline together</h1>
+      <p class="lead">A conversation guide for HR to bring IT, employees and any union to the same table, and agree on how to measure where people are today, before anyone is trained.</p>
+    </header>
+
+    <p class="notice no-print" id="profile-note"></p>
+
+    <form id="doc-form" class="form no-print">
+      <div class="row">
+        <label>Who leads it
+          <input name="hr_lead" placeholder="e.g. Our HR manager">
+        </label>
+        <label>Who represents IT
+          <input name="it_contact" placeholder="e.g. Our IT lead">
+        </label>
+      </div>
+
+      <label>Who speaks for employees
+        <input name="employee_reps" placeholder="e.g. Two volunteers from frontline teams">
+        <span class="hint">Employees should help decide what is measured about them.</span>
+      </label>
+
+      <label>Anyone else at the table (optional)
+        <input name="extra_people" placeholder="e.g. Our privacy officer">
+      </label>
+
+      <fieldset>
+        <legend>What could help build the baseline?</legend>
+        <label class="inline"><input type="checkbox" name="src_usage" value="yes" checked> AI tool usage, grouped by team</label>
+        <label class="inline"><input type="checkbox" name="src_licenses" value="yes" checked> License counts and active use</label>
+        <label class="inline"><input type="checkbox" name="src_expenses" value="yes"> AI subscriptions in expense reports</label>
+        <label class="inline"><input type="checkbox" name="src_incidents" value="yes"> Data incidents involving AI tools</label>
+        <label class="inline"><input type="checkbox" name="src_survey" value="yes" checked> Anonymous self-reported confidence</label>
+      </fieldset>
+
+      <div class="row">
+        <label>Tell employees by (optional)
+          <input name="notice_date" placeholder="e.g. January 12">
+        </label>
+        <label>Share results by (optional)
+          <input name="results_date" placeholder="e.g. February 9">
+        </label>
+      </div>
+    </form>
+
+    <div class="actions no-print">
+      <button type="button" id="copy">Copy text</button>
+      <button type="button" id="download" class="secondary">Download (.md)</button>
+      <button type="button" id="print" class="secondary">Print or save as PDF</button>
+    </div>
+    <p id="status" role="status" class="status no-print"></p>
+
+    <article id="preview" class="document" aria-label="Your conversation guide"></article>
+
+    <p class="next no-print">Coming next in this step: a personal learning plan each employee owns.</p>
+  </main>
+
+  <script src="/vendor/marked.min.js"></script>
+  <script src="/js/template.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/generator.js"></script>
+  <script>
+    HCDGenerator.setup({
+      draftKey: 'hcd-hr-script-v1',
+      templateUrl: '/templates/hr-conversation-script.md',
+      filename: 'baseline-conversation-guide.md',
+      buildData: (f, profile) => ({
+        org_name: profile.org_name,
+        today: HCDGenerator.today(),
+        approved_tools: profile.approved_tools,
+        union: profile.union === 'yes',
+        union_name: profile.union_name || 'Our union',
+        hr_lead: f.hr_lead || 'HR',
+        it_contact: f.it_contact || 'IT',
+        employee_reps: f.employee_reps || 'Employee representatives',
+        extra_people: f.extra_people,
+        src_usage: f.src_usage,
+        src_licenses: f.src_licenses,
+        src_expenses: f.src_expenses,
+        src_incidents: f.src_incidents,
+        src_survey: f.src_survey,
+        notice_date: f.notice_date,
+        results_date: f.results_date,
+        no_results_date: !f.results_date
+      })
+    });
+  </script>
+</body>
+</html>
