@@ -1,0 +1,20 @@
+{
+  "country": "US",
+  "name": "US Department of Labor AI Literacy Framework",
+  "short": "DOL AI Literacy Framework",
+  "status": "Official US framework with five content areas.",
+  "groups": [
+    { "id": "all", "label": "Five content areas", "areas": ["understand", "explore", "direct", "evaluate", "responsible"] }
+  ],
+  "areas": {
+    "understand": { "label": "Understand AI principles" },
+    "explore": { "label": "Explore AI uses" },
+    "direct": { "label": "Direct AI effectively" },
+    "evaluate": { "label": "Evaluate AI outputs" },
+    "responsible": { "label": "Use AI responsibly" }
+  },
+  "risk_framework": "NIST AI Risk Management Framework",
+  "resources": [
+    { "label": "NIST AI Risk Management Framework", "note": "How the organization manages AI risk" }
+  ]
+}

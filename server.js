@@ -18,6 +18,9 @@ app.get('/vendor/marked.min.js', (req, res) => {
 });
 // Document templates are read-only markdown in content/templates.
 app.use('/templates', express.static(path.join(__dirname, 'content', 'templates')));
+// Literacy frameworks (Canada and US) and learning plan data, also read-only.
+app.use('/frameworks', express.static(path.join(__dirname, 'content', 'frameworks')));
+app.use('/learning-plans', express.static(path.join(__dirname, 'content', 'learning-plans')));
 
 // Render uses this to check the app is up.
 app.get('/health', (req, res) => {

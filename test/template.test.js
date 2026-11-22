@@ -61,3 +61,18 @@ test('the HR conversation script drops unchosen data sources and keeps the table
   const none = render(tpl, { no_results_date: true });
   assert.ok(none.includes('\nShare a team-level summary'));
 });
+
+test('framework files cover every area the role matrix uses', () => {
+  const tiers = require('../content/learning-plans/role-tiers.json').tiers;
+  for (const code of ['us', 'ca']) {
+    const fw = require(`../content/frameworks/${code}.json`);
+    const grouped = fw.groups.flatMap((g) => g.areas);
+    grouped.forEach((a) => assert.ok(fw.areas[a], `${code}: ${a} has a label`));
+    for (const t of Object.values(tiers)) {
+      for (const [area, depth] of Object.entries(t.depth)) {
+        if (depth === 'none' || (code === 'us' && area === 'build')) continue;
+        assert.ok(grouped.includes(area), `${code}: ${area} appears in a group`);
+      }
+    }
+  }
+});
