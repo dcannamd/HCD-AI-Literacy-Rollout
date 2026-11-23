@@ -77,5 +77,18 @@
     "minutes": 90,
     "where": "Free and self-paced, through Job Bank's Training Finder and community partners, from December 2026",
     "how": "Optional: in weeks 1 to 5, spend about 20 extra minutes a week on the course, or do it in one sitting."
+  },
+  "law_check": {
+    "as_of": "November 2026",
+    "items": [
+      "**Privacy law applies now.** PIPEDA, or your provincial law (such as B.C.'s or Alberta's PIPA, or Quebec's Law 25), covers personal information used with AI tools.",
+      "**Ontario, 25 or more employees:** public job postings must say if AI is used to screen, assess or select applicants (since January 1, 2026).",
+      "**Coming:** federal Bill C-36, before Parliament, would require plain explanations when an algorithm shapes a consequential employment decision."
+    ],
+    "sources": [
+      "https://www.lexpert.ca/news/technology-law/ai-laws-update-what-now-after-artificial-intelligence-and-data-act/394712",
+      "https://www.hcamag.com/ca/specialization/employment-law/federal-privacy-bill-targets-employee-data-and-ai-hiring-with-fines-up-to-5-of-revenue/579056",
+      "https://www.canadaemploymenthumanrightslaw.com/2025/11/ontarios-new-ai-rules-for-job-postings-in-2026-what-hr-needs-to-do-now/"
+    ]
   }
 }
