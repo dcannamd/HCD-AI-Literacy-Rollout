@@ -14,6 +14,12 @@
     let template = '';
     let lastMarkdown = '';
 
+    // Ticks on checklist items in the document, saved in this browser by item text.
+    const checksKey = `${opts.draftKey}-checks`;
+    let checks = {};
+    try { checks = JSON.parse(localStorage.getItem(checksKey)) || {}; } catch (e) { checks = {}; }
+    const output = () => HCDTemplate.applyChecks(plainText(lastMarkdown), checks);
+
     try {
       const draft = JSON.parse(localStorage.getItem(opts.draftKey));
       if (draft) HCDProfile.fillForm(form, draft);
@@ -28,9 +34,20 @@
       lastMarkdown = HCDTemplate.render(template, opts.buildData(answers, HCDProfile.load()));
       // Values are HTML-escaped by the template engine before markdown is parsed.
       preview.innerHTML = marked.parse(lastMarkdown);
-      // Task-list boxes in documents are read-only; give each one its item's text as a label.
+      // Checklist items: tickable, labelled, remembered, and shown without a bullet.
       preview.querySelectorAll('li > input[type=checkbox]').forEach((box) => {
-        box.setAttribute('aria-label', box.parentElement.textContent.trim());
+        const li = box.parentElement;
+        const text = li.textContent.trim();
+        li.classList.add('task');
+        li.parentElement.classList.add('task-list');
+        box.disabled = false;
+        box.checked = !!checks[text];
+        box.setAttribute('aria-label', text);
+        box.addEventListener('change', () => {
+          if (box.checked) checks[text] = true;
+          else delete checks[text];
+          try { localStorage.setItem(checksKey, JSON.stringify(checks)); } catch (e) { /* storage unavailable */ }
+        });
       });
     }
 
@@ -39,7 +56,7 @@
 
     document.getElementById('copy').addEventListener('click', async () => {
       try {
-        await navigator.clipboard.writeText(plainText(lastMarkdown));
+        await navigator.clipboard.writeText(output());
         status.textContent = 'Copied. Paste it into an email, document or intranet page.';
       } catch (e) {
         status.textContent = 'Your browser blocked copying. Use Download instead.';
@@ -47,7 +64,7 @@
     });
 
     document.getElementById('download').addEventListener('click', () => {
-      const blob = new Blob([plainText(lastMarkdown)], { type: 'text/markdown' });
+      const blob = new Blob([output()], { type: 'text/markdown' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = opts.filename;

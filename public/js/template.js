@@ -34,7 +34,14 @@
     return list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1];
   }
 
-  const api = { render, escapeHtml, isPresent, joinList };
+  // Mark checklist items ("- [ ] text") as done ("- [x] text") when their text is in `checks`.
+  function applyChecks(markdown, checks) {
+    const done = checks || {};
+    return markdown.replace(/^(\s*[-*] )\[ \] (.+)$/gm, (line, lead, text) =>
+      done[text.trim()] ? `${lead}[x] ${text}` : line);
+  }
+
+  const api = { render, escapeHtml, isPresent, joinList, applyChecks };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HCDTemplate = api;
 })(this);

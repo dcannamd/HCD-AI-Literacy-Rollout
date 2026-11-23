@@ -110,3 +110,13 @@ test('the launch kit renders with and without the optional parts', () => {
   assert.ok(!bare.includes('work time'));
   assert.ok(bare.split('\n').every((l) => !/^\{\{/.test(l)));
 });
+
+test('ticked checklist items are kept in copied and downloaded text', () => {
+  const { applyChecks } = require('../public/js/template.js');
+  const md = '## Next steps\n\n- [ ] Ground rules signed\n- [ ] Employees notified\n- Not a task';
+  const out = applyChecks(md, { 'Employees notified': true });
+  assert.ok(out.includes('- [ ] Ground rules signed'));
+  assert.ok(out.includes('- [x] Employees notified'));
+  assert.ok(out.includes('- Not a task'));
+  assert.strictEqual(applyChecks(md, {}), md);
+});
