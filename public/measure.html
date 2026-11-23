@@ -18,29 +18,42 @@
 
     <p class="notice no-print" id="profile-note"></p>
 
-    <form id="doc-form" class="form no-print">
-      <label>One outcome that matters to your organization (optional)
-        <input name="outcome" placeholder="e.g. Hours spent on client follow-ups each week">
-      </label>
+    <nav class="mode-tabs no-print" aria-label="Stage">
+      <button type="button" data-mode="plan" aria-pressed="true">Now: plan</button>
+      <button type="button" data-mode="results" aria-pressed="false" class="secondary">At 90 days: results</button>
+    </nav>
 
-      <details class="setup" id="results-form">
-        <summary>At 90 days: add your results</summary>
+    <form id="doc-form" class="form no-print">
+      <input type="hidden" name="mode" value="plan">
+
+      <div id="plan-fields">
+        <label>Something you want to improve (optional)
+          <input name="outcome" placeholder="e.g. Time spent on client follow-ups">
+          <span class="field-hint" id="outcome-hint" hidden>Describe it in words. You'll add the numbers at 90 days.</span>
+        </label>
+        <label>How you'll measure it
+          <input name="outcome_unit" placeholder="e.g. hours per week">
+        </label>
+      </div>
+
+      <div id="results-fields" hidden>
         <div class="row">
           <label>Period
             <input name="period" placeholder="e.g. January to March 2027">
           </label>
           <label>People who responded
             <input name="responses" inputmode="numeric" placeholder="e.g. 24">
+            <span class="field-hint" id="responses-hint">Needed to show results (5 or more).</span>
           </label>
         </div>
-        <p class="hint">Start and 90-day numbers. Leave blank what you didn't measure.</p>
+        <p class="hint">Enter numbers at the start and at 90 days. Leave blank what you didn't measure.</p>
         <div class="results-grid">
           <span></span><strong>Start</strong><strong>90 days</strong>
-          <span>Found it useful (1 to 5)</span><span></span><input name="pulse_end" aria-label="Found it useful, 90 days">
-          <span>Confidence (1 to 5)</span><input name="conf_start" aria-label="Confidence, start"><input name="conf_end" aria-label="Confidence, 90 days">
-          <span>Teams using approved tools</span><input name="approved_start" aria-label="Teams using approved tools, start"><input name="approved_end" aria-label="Teams using approved tools, 90 days">
-          <span>Unapproved tools in use</span><input name="unapproved_start" aria-label="Unapproved tools, start"><input name="unapproved_end" aria-label="Unapproved tools, 90 days">
-          <span>Data incidents</span><input name="incidents_start" aria-label="Data incidents, start"><input name="incidents_end" aria-label="Data incidents, 90 days">
+          <span>Found it useful (1 to 5)</span><span></span><input name="pulse_end" inputmode="decimal" aria-label="Found it useful, 90 days">
+          <span>Confidence (1 to 5)</span><input name="conf_start" inputmode="decimal" aria-label="Confidence, start"><input name="conf_end" inputmode="decimal" aria-label="Confidence, 90 days">
+          <span>Teams using approved tools</span><input name="approved_start" inputmode="numeric" aria-label="Teams using approved tools, start"><input name="approved_end" inputmode="numeric" aria-label="Teams using approved tools, 90 days">
+          <span>Unapproved tools in use</span><input name="unapproved_start" inputmode="numeric" aria-label="Unapproved tools, start"><input name="unapproved_end" inputmode="numeric" aria-label="Unapproved tools, 90 days">
+          <span>Data incidents</span><input name="incidents_start" inputmode="numeric" aria-label="Data incidents, start"><input name="incidents_end" inputmode="numeric" aria-label="Data incidents, 90 days">
           <span id="outcome-label">Your outcome</span><input name="outcome_start" aria-label="Outcome, start"><input name="outcome_end" aria-label="Outcome, 90 days">
         </div>
         <label>You said, we did (one per line)
@@ -49,7 +62,7 @@
         <label>Next 90 days (one per line)
           <textarea name="next_steps" rows="2" placeholder="Add scenarios for managers to the practice sandbox."></textarea>
         </label>
-      </details>
+      </div>
     </form>
 
     <div class="actions no-print">
@@ -73,7 +86,20 @@
     }
     const lines = (text) => (text || '').split('\n').map((l) => l.trim()).filter(Boolean).map((l) => `- ${l}`).join('\n');
 
-    HCDGenerator.setup({
+    // Two stages: plan now, results at 90 days.
+    const modeInput = document.querySelector('input[name=mode]');
+    function setMode(mode) {
+      modeInput.value = mode;
+      document.getElementById('plan-fields').hidden = mode !== 'plan';
+      document.getElementById('results-fields').hidden = mode !== 'results';
+      document.querySelectorAll('[data-mode]').forEach((b) => {
+        const on = b.dataset.mode === mode;
+        b.setAttribute('aria-pressed', on);
+        b.classList.toggle('secondary', !on);
+      });
+    }
+
+    const gen = HCDGenerator.setup({
       draftKey: 'hcd-measure-v1',
       templateUrl: '/templates/measure-report.md',
       filename: 'measure-and-report.md',
@@ -85,19 +111,41 @@
         if (agreed.src_usage) behaviour.push('approved and unapproved tool use, by team');
         if (agreed.src_licenses) behaviour.push('active licenses');
         if (agreed.src_incidents) behaviour.push('data incidents');
-        document.getElementById('outcome-label').textContent = f.outcome || 'Your outcome';
+        const outcome = (f.outcome || '').trim();
+        const looksLikeNumber = /^[\d\s.,%$-]+$/.test(outcome);
+        document.getElementById('outcome-hint').hidden = !looksLikeNumber;
+        const outcomeText = outcome && !looksLikeNumber
+          ? (f.outcome_unit ? `${outcome} (${f.outcome_unit})` : outcome)
+          : '';
+        document.getElementById('outcome-label').textContent = outcomeText || 'Your outcome';
+
+        const n = Number(f.responses);
+        const hint = document.getElementById('responses-hint');
+        hint.className = 'field-hint' + (f.responses && n >= 5 ? ' ok' : '');
+        hint.textContent = !f.responses ? 'Needed to show results (5 or more).'
+          : n >= 5 ? 'Results will show.' : 'Fewer than 5: results stay hidden to protect privacy.';
+
+        setMode(f.mode || 'plan');
         return {
           org_name: profile.org_name,
           today: HCDGenerator.today(),
           behaviour: behaviour.length ? behaviour.join(', ').replace(/^./, (c) => c.toUpperCase()) : '',
-          outcome: f.outcome,
+          outcome: outcomeText,
           period: f.period,
-          results: HCDReport.resultsMarkdown(f, f.outcome),
+          results: f.mode === 'results'
+            ? HCDReport.resultsMarkdown(f, outcomeText)
+            : 'At 90 days, switch to "At 90 days: results" above and add your numbers. This section becomes your report.',
           said_did: lines(f.said_did),
           next_steps: lines(f.next_steps)
         };
       }
     });
+  </script>
+  <script>
+    document.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => {
+      setMode(b.dataset.mode);
+      gen.update();
+    }));
   </script>
   <script src="/js/nav.js"></script>
   <script src="/js/feedback.js"></script>
