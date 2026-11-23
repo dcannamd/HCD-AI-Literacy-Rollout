@@ -6,7 +6,7 @@ For organizations of any size, from small nonprofits to large enterprises. Leade
 
 Inspired by Devlin Peck's *AI Literacy Rollout Kit* and grounded in the US Department of Labor AI Literacy Framework, Canada's National AI Literacy Initiative, and the NIST AI Risk Management Framework.
 
-Built by [Dana Cannam](https://www.danacannam.com).
+Built by [Dana Cannam](https://www.danacannamdesign.com).
 
 ---
 
@@ -82,7 +82,7 @@ Then visit `http://localhost:3000`. Check that it's running at `http://localhost
 
 1. In Render, choose **New → Blueprint** and select this repo. Render reads `render.yaml`.
 2. Add any keys from `.env.example` under the service's **Environment** tab.
-3. Optional: add a custom domain (for example `tools.danacannam.com`) under **Settings → Custom Domains**.
+3. Optional: add a custom domain (for example `tools.danacannamdesign.com`) under **Settings → Custom Domains**.
 
 The free instance is fine for testing. Switch to an always-on instance before sharing it publicly.
 
