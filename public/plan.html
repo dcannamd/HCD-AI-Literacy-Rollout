@@ -12,10 +12,10 @@
     <header class="no-print">
       <p class="eyebrow">Your skills · Step 1</p>
       <h1>Your AI learning plan</h1>
-      <p class="lead">Answer a few questions and get a plan made for your role, about 20 minutes a week. There are no wrong answers: this is a starting point, not a test.</p>
+      <p class="lead">About 20 minutes a week, made for your role. Not a test.</p>
     </header>
 
-    <p class="notice no-print">Your answers and plan stay on this device. Nobody else sees them unless you choose to share.</p>
+    <p class="notice no-print">Stays on this device unless you share it.</p>
 
     <section id="progress" class="progress-panel no-print" aria-labelledby="progress-heading">
       <h2 id="progress-heading">My progress</h2>
@@ -42,7 +42,7 @@
 
       <details id="reminders">
         <summary>Add reminders to my calendar</summary>
-        <p class="hint">Download a calendar file with one 20-minute session a week and your 90-day check-in. It works with Google, Outlook and Apple calendars.</p>
+        <p class="hint">Works with Google, Outlook and Apple calendars.</p>
         <div class="row">
           <label class="field">Day
             <select id="rem-day">
@@ -59,7 +59,7 @@
 
       <details id="checkin">
         <summary>My 90-day check-in</summary>
-        <p class="hint">Rate the same statements again. You'll see where you started and where you are now.</p>
+        <p class="hint">Rate yourself again and compare.</p>
         <div id="checkin-ratings"></div>
         <div id="checkin-compare"></div>
       </details>
@@ -75,7 +75,7 @@
       </fieldset>
 
       <fieldset>
-        <legend>Which describes your role? Pick all that fit.</legend>
+        <legend>Your role (pick all that fit)</legend>
         <label class="inline"><input type="checkbox" name="tiers" value="frontline"> I work directly with customers, clients or the public</label>
         <label class="inline"><input type="checkbox" name="tiers" value="knowledge"> I work mostly with documents, data or ideas</label>
         <label class="inline"><input type="checkbox" name="tiers" value="managers"> I manage people</label>
@@ -84,13 +84,13 @@
       </fieldset>
 
       <fieldset id="ratings">
-        <legend>How true is each of these for you today?</legend>
-        <p class="hint">1 = not yet, 5 = very much. Lower ratings simply move that topic earlier in your plan.</p>
+        <legend>How true is each today?</legend>
+        <p class="hint">1 = not yet, 5 = very much.</p>
       </fieldset>
 
       <label>Which task in your work would you most like AI to help with?
         <input name="task" placeholder="e.g. writing follow-up emails to clients">
-        <span class="hint">Your practice exercises will use this task, always with made-up details.</span>
+        
       </label>
 
       <label>What would make you feel more secure as we start using AI?
@@ -98,7 +98,7 @@
       </label>
 
       <fieldset>
-        <legend>How do you like to learn? (optional)</legend>
+        <legend>How you like to learn (optional)</legend>
         <label class="inline"><input type="checkbox" name="formats" value="short reading or videos"> Short reading or videos</label>
         <label class="inline"><input type="checkbox" name="formats" value="hands-on practice"> Hands-on practice</label>
         <label class="inline"><input type="checkbox" name="formats" value="learning with colleagues"> Learning with colleagues</label>
@@ -115,6 +115,8 @@
     </form>
     </details>
 
+    <details id="full-plan" class="full-plan">
+      <summary class="no-print">My full plan (print, download or copy)</summary>
     <div class="actions no-print">
       <button type="button" id="copy">Copy text</button>
       <button type="button" id="download" class="secondary">Download (.md)</button>
@@ -123,6 +125,7 @@
     <p id="status" role="status" class="status no-print"></p>
 
     <article id="preview" class="document" aria-label="Your learning plan"></article>
+    </details>
     <article id="record" class="document record" aria-label="Your completion record" hidden></article>
   </main>
 
@@ -211,7 +214,7 @@
         const p = HCDProgress.load();
         const sum = HCDProgress.summary(state.plan, p.done);
         $('bar').value = sum.percent;
-        $('bar-text').textContent = `${sum.done} of ${sum.total} sessions done` + (sum.done ? '. Nice work.' : '. Your first session takes about 20 minutes.');
+        $('bar-text').textContent = `${sum.done} of ${sum.total} sessions done` + (sum.done ? '. Nice work.' : '.');
 
         // Up next
         const next = $('up-next');
@@ -341,6 +344,10 @@
         URL.revokeObjectURL(a.href);
       });
 
+      window.addEventListener('beforeprint', () => {
+        if (!document.body.classList.contains('print-record')) $('full-plan').open = true;
+      });
+
       const gen = HCDGenerator.setup({
         draftKey: 'hcd-plan-v1',
         templateUrl: '/templates/learning-plan.md',
@@ -361,7 +368,7 @@
           const growth = rated.filter((a) => Number(ratings[a]) <= 2).map((a) => AREA_SHORT[a]);
 
           // Goals: grouped by stage for Canada (Understand, Use, Build), as one list for the US.
-          const goalLine = (a) => `- **${label(fw, a)}.** ${activities.areas[a].goal} *How I'll know:* ${activities.areas[a].check}`;
+          const goalLine = (a) => `- ${activities.areas[a].goal} *(${activities.areas[a].check})*`;
           let goals;
           if (country === 'CA') {
             goals = fw.groups
@@ -389,10 +396,6 @@
           const tierInfo = tiers.map((t) => roleTiers.tiers[t]).filter(Boolean);
           state.tierLabels = tierInfo.map((t) => t.label);
           setTimeout(renderProgress, 0);
-          const resources = (fw.resources || [])
-            .filter((r) => country === 'CA' || tiers.includes('builders') || tiers.includes('executives'))
-            .map((r) => `- **${r.label}:** ${r.note}`)
-            .join('\n');
 
           return {
             framework: country === 'CA' ? 'Aligned with ' + fw.short : 'Aligned with the ' + fw.short,
@@ -402,21 +405,18 @@
             no_ratings: rated.length === 0,
             goals,
             minutes: plan.perWeek * HCDPlan.SESSION_MINUTES,
-            rhythm: plan.perWeek === 1 ? 'one session a week' : `${plan.perWeek} sessions a week`,
-            length: `That's ${plan.sessionCount} sessions over ${plan.weeks.length} weeks, then a 90-day check-in.` +
+            length: `${plan.sessionCount} sessions over ${plan.weeks.length} weeks.` +
               (plan.weeks.length > 13
-                ? ` To finish within the 90-day rollout, choose about ${Math.ceil(plan.sessionCount / 13) * HCDPlan.SESSION_MINUTES} minutes a week, or keep this pace and take longer.`
+                ? ` To finish in 90 days, choose about ${Math.ceil(plan.sessionCount / 13) * HCDPlan.SESSION_MINUTES} minutes a week.`
                 : ''),
-            tier_formats: HCDTemplate.joinList(tierInfo.map((t) => t.format.toLowerCase())),
             formats: HCDTemplate.joinList(f.formats || []),
-            tier_notes: tierInfo.filter((t) => t.note).map((t) => `*${t.label}:* ${t.note}`).join(' '),
             weeks,
-            secure: f.secure || 'I can come back and add this any time.',
-            resources,
+            secure: f.secure,
             framework_short: country === 'CA' ? "Canada's AI literacy progression" : 'the DOL AI Literacy Framework',
-            foundation_intro: fw.foundation_intro,
-            foundation: fw.foundation ? `**${fw.foundation.label}** (about ${fw.foundation.minutes} minutes). ${fw.foundation.where}. ${fw.foundation.how}` : '',
-            principles: (fw.principles || []).map((p) => `- **${p.label}.** ${p.how}`).join('\n')
+            mapping: country === 'CA'
+              ? `Your sessions follow Canada's Understand, Use, Build progression.` +
+                (fw.foundation ? ` Optional: add the free ${fw.foundation.minutes}-minute course ${fw.foundation.label} in your first weeks (Job Bank's Training Finder, from December 2026).` : '')
+              : "Each session covers one of the DOL's five AI literacy areas, with hands-on practice in the context of your own work."
           };
         }
       });

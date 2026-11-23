@@ -1,100 +1,96 @@
-# Building our AI baseline together: a conversation guide
+# Building our AI baseline together
 
-*{{org_name}} · Prepared for {{hr_lead}} · {{today}}*
+*Conversation guide · {{org_name}} · {{today}}*
 
-## Why we're having this conversation
+## Goal
 
-Before we train anyone, we want an honest picture of how AI is already used at {{org_name}}. That picture shapes training that fits, and it's what we'll measure progress against at 90 days.
-
-Surveys alone miss a lot: people under-report tools they aren't sure are allowed. Usage data alone can feel like surveillance. So we'll combine the two, and agree on how before anything is collected.
+Agree on an honest picture of how AI is used at {{org_name}} today, before anyone is trained. Surveys alone miss things, and usage data alone can feel like surveillance, so we'll use both, carefully.
 
 ## Who's at the table
 
-- **{{hr_lead}}** leads the conversation and owns the promises made to employees.
-- **{{it_contact}}** knows what usage data exists, and what it can and can't show.
-- **{{employee_reps}}** make sure what we measure is fair and that employees' concerns are heard.
+- **{{hr_lead}}:** leads, and owns the promises to employees
+- **{{it_contact}}:** knows what data exists and what it can show
+- **{{employee_reps}}:** keep it fair, and bring employees' concerns
 {{#if union}}
-- **{{union_name}}** is involved in deciding what is measured and how it is used.
+- **{{union_name}}:** helps decide what's measured and how it's used
 {{/if}}
 {{#if extra_people}}
 - **{{extra_people}}**
 {{/if}}
 
-## Ground rules to agree in writing first
+## Agree these first, in writing
 
-1. **Amnesty.** Nobody will be disciplined for anything this baseline reveals, including use of tools we haven't approved. We need the truth more than we need enforcement right now.
-2. **Grouped data only.** Results are reported by team and tool, never by person, and never for a group smaller than 5.
-3. **The least data that does the job.** If we don't need it to plan training, we don't collect it.
-4. **Employees hear first.** Everyone is told what will be collected, why and who sees it before collection starts.
-5. **Results go back to everyone.** Employees see what we found and what we changed because of it.
+1. **Amnesty:** no one is disciplined for what we learn.
+2. **Grouped data only:** by team and tool, never by person, and no group under 5.
+3. **Least data needed:** if we don't need it to plan training, we don't collect it.
+4. **Employees hear first,** before anything is collected.
+5. **Results go back to everyone.**
 
-## Suggested opening
+## Opening line
 
-> Thanks for making time for this. We're about to start an AI literacy program, and before we train anyone, we want an honest picture of where people are today. I want to be clear about what this is and what it isn't. It isn't monitoring, it isn't a performance review, and nobody will get in trouble for what we learn. Our goal is a map, not a disciplinary file. I'd like us to agree together on what we look at, how we protect people, and how we share the results back.
+> Before we train anyone, we want an honest picture of where people are. This isn't monitoring or a performance review, and nobody gets in trouble for what we learn. Let's agree together on what we look at and how we protect people.
 
 ## Questions for IT
 
 {{#if src_usage}}
-- Which AI tools can we see in use today, approved or not? Where policy allows, this might come from sign-in logs, network or browser analytics.
-- Can those numbers be reported by team and by tool, without individual names?
+- Which AI tools are in use, approved or not? Can we report it by team and tool, without names?
 {{/if}}
 {{#if src_licenses}}
-- Which AI licenses are we paying for, and how many are actively used?
+- Which AI licenses do we pay for, and how many are used?
 {{/if}}
 {{#if approved_tools}}
-- How do we currently see usage of {{approved_tools}}?
+- How do we see usage of {{approved_tools}} today?
 {{/if}}
 {{#if src_expenses}}
-- Where policy allows, do expense reports show AI subscriptions people are paying for themselves?
+- Where policy allows, do expense reports show AI subscriptions people pay for themselves?
 {{/if}}
 {{#if src_incidents}}
-- Have there been any incidents of sensitive data entered into AI tools? Counts and types only, no names.
+- Any incidents of sensitive data entered into AI tools? Counts and types only.
 {{/if}}
-- How long would this data be kept, and who could see it?
+- How long is this data kept, and who can see it?
 
 ## Questions for employee representatives
 
-- What are people most worried about when it comes to AI at work?
-- What would make people comfortable sharing how they really use AI?
-- Is there anything we should definitely not measure?
-- How should results be shared back so they feel trustworthy?
+- What worries people most about AI at work?
+- What would make people comfortable being honest?
+- What should we not measure?
 
 ## What we will and won't gather
 
 | We will gather | We won't gather |
 | --- | --- |
 {{#if src_usage}}
-| Tool usage, grouped by team and tool | Individual browsing or activity histories |
+| Tool usage, grouped by team and tool | Individual activity |
 {{/if}}
 {{#if src_licenses}}
-| License counts and how many are active | Who is or isn't using their license |
+| License counts and active use | Who is or isn't using a license |
 {{/if}}
 {{#if src_expenses}}
-| Totals spent on AI subscriptions, where policy allows | Individual expense claims |
+| Total AI subscription spending | Individual expense claims |
 {{/if}}
 {{#if src_incidents}}
-| Counts and types of data incidents | Names of the people involved |
+| Counts of data incidents | Names of people involved |
 {{/if}}
 {{#if src_survey}}
-| Anonymous self-reported confidence and needs | Names linked to answers |
+| Anonymous confidence ratings | Names linked to answers |
 {{/if}}
-| What we need to plan training | The content of anyone's prompts or chats |
+| Only what we need to plan training | Anyone's prompts or chats |
 
-## Telling employees before we start
+## Note to employees
 
-Send the purpose and promises statement, then a short note like this{{#if notice_date}} by {{notice_date}}{{/if}}:
+Send with the purpose and promises statement{{#if notice_date}}, by {{notice_date}}{{/if}}:
 
-> Next week we'll start building a picture of how AI is used across {{org_name}}, so we can plan training that actually helps. Here's exactly what we'll look at: only team-level totals, never individual activity or the content of anything you've written. Nobody will be disciplined for anything we learn, including use of tools we haven't approved. You'll see the results{{#if results_date}} by {{results_date}}{{/if}}. Questions? Contact {{hr_lead}}.
+> We're building a picture of how AI is used across {{org_name}} so we can plan useful training. We'll only look at team totals, never individual activity or anything you've written. No one will be disciplined for what we learn. You'll see the results{{#if results_date}} by {{results_date}}{{/if}}. Questions? Ask {{hr_lead}}.
 
-## Sharing results back
+## Share results back
 
-{{#if results_date}}By {{results_date}}, share{{/if}}{{#if no_results_date}}Share{{/if}} a team-level summary with everyone: what we found, what surprised us, and what we're changing because of it. We'll run the same baseline again at 90 days so everyone can see the progress.
+{{#if results_date}}By {{results_date}}, share{{/if}}{{#if no_results_date}}Share{{/if}} a team-level summary: what we found and what we'll change. Repeat the baseline at 90 days.
 
-## Agreed next steps
+## Next steps
 
-- [ ] Ground rules and amnesty agreed and signed
-- [ ] IT confirms data can be grouped by team, with no group smaller than 5
-- [ ] Employees notified before collection starts
+- [ ] Ground rules signed
+- [ ] IT confirms team-level reporting, no group under 5
+- [ ] Employees notified
 - [ ] Baseline collected
-- [ ] Results shared back with everyone
-- [ ] Same baseline scheduled again at 90 days
+- [ ] Results shared
+- [ ] 90-day repeat scheduled

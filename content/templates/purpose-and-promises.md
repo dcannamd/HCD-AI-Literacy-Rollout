@@ -2,53 +2,43 @@
 
 *{{org_name}} · {{today}}*
 
-## Why we're doing this
+## Why
 
-{{org_name}} is starting an AI literacy program for everyone who works here{{#if role_tiers}}, including {{role_tiers}}{{/if}}. Many of us already use AI tools in our work. Our goal is for everyone to use them confidently, safely and on their own terms.
+{{org_name}} is helping everyone{{#if role_tiers}}, including {{role_tiers}},{{/if}} use AI tools confidently and safely, on their own terms. Over about 90 days{{#if start_date}} from {{start_date}}{{/if}}, you'll get training that fits your role, and you'll help shape how it runs.
 {{#if purpose_note}}
 
 {{purpose_note}}
 {{/if}}
 
-## What this program is
+## What it is not
 
-- **Capability-building.** Practical skills for understanding AI, directing it, checking its output and using it responsibly.
-- **Shaped with you.** Employees help decide how the program runs and what gets measured.
-- **Paced over about 90 days**{{#if start_date}}, starting {{start_date}}{{/if}}. Policy first, then a pilot group, then training matched to each role, then ongoing support.
+- **Not surveillance.** We don't monitor individuals.
+- **Not a performance review.** Nothing here is used to evaluate you.
+- **Not about cutting jobs.** It's about building skills.
 
-## What this program is not
+## Our promises
 
-- **Not surveillance.** We are not monitoring individuals.
-- **Not a performance review.** Nothing in this program is used to evaluate you.
-- **Not a list of jobs to cut.** This program is about building skills, not about deciding whose role is automated.
-
-## Our promises to you
-
-- **Your learning plan is yours.** You choose your goals and how you learn.
-- **We'll tell you before we measure.** Before we collect any information about AI use, we'll explain what we're collecting, why, and who will see it.
-- **Grouped data only.** {{data_promise}}
-- **Amnesty for honesty.** Nobody will be disciplined for telling us about AI tools they have used, including tools we haven't approved.
-- **Your input changes things.** We'll share what we heard and what we changed because of it.
+- **Your learning plan is yours.**
+- **We'll tell you before we measure:** what, why and who sees it.
+- **{{data_promise}}**
+- **No one is punished for honesty** about AI tools they've used, approved or not.
+- **We'll share what we heard,** and what we changed because of it.
 {{#if union}}
-- **We'll work with {{union_name}}.** Representatives will be involved in decisions about training and measurement.
+- **We'll work with {{union_name}}** on training and measurement.
 {{/if}}
 
-## How your information is handled
+## Your information
 
 {{data_detail}}
 
-## Approved tools and policy
+## Tools and policy
 
-{{#if approved_tools}}
-The AI tools currently approved for work are: {{approved_tools}}.
+{{#if approved_tools}}Approved tools: {{approved_tools}}. {{/if}}{{policy_line}}
 
-{{/if}}
-{{policy_line}}
+## Get started
 
-## Questions and access
+Make your own learning plan at {{plan_link}}. It takes a few minutes and stays on your device.
 
-Everyone can make their own AI learning plan at {{plan_link}}. It takes a few minutes, and your plan stays on your own device.
-
-Questions about this program can go to {{contact}}. This statement is available in other formats on request{{#if languages}}, and in {{languages}}{{/if}}.
+Questions: {{contact}}. Other formats on request{{#if languages}}, including {{languages}}{{/if}}.
 
 **Signed:** {{signed_by}}
