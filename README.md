@@ -2,7 +2,7 @@
 
 **A free, open-source planner for rolling out AI literacy the human-centered way.**
 
-An organization describes its situation once, and the app helps it bring people into the process, learn and practise safely, find funding, and generate the documents a rollout needs.
+For organizations of any size, from small nonprofits to large enterprises. Leaders get five short documents to run the rollout; employees get a personal learning plan and a safe place to practise. Everything runs in the browser: no logins, no AI calls, and nothing personal is stored on the server.
 
 Inspired by Devlin Peck's *AI Literacy Rollout Kit* and grounded in the US Department of Labor AI Literacy Framework, Canada's National AI Literacy Initiative, and the NIST AI Risk Management Framework.
 
@@ -28,10 +28,10 @@ Built by [Dana Cannam](https://www.danacannam.com).
 | 1 | Your organization | Profile used by every document |
 | 2 | Purpose and promises | What the program is, and is not |
 | 3 | Build your baseline together | Conversation guide for HR, IT and employees, with the notice to staff |
-| 4 | AI use guide | Policy, approved tools and data red lines *(coming)* |
-| 5 | Launch kit | Announcement and manager talking points *(coming)* |
-| 6 | Measure and report | Measurement plan, then the 90-day report *(coming)* |
-| Optional | Fund it | Grant finder and grant-ready proposal *(coming)* |
+| 4 | AI use guide | Approved tools, data red lines and no-blame reporting, plus Canadian or US laws to check if AI is used in HR |
+| 5 | Launch kit | Announcement from leadership, HR and a colleague, plus manager talking points |
+| 6 | Measure and report | Measurement plan now; add numbers at 90 days and it becomes the report (nothing shown for groups under 5) |
+| Optional | Fund it | Grant finder and grant-ready proposal *(coming soon)* |
 
 **I'm building my AI skills** (every employee). One living document:
 
@@ -47,13 +47,17 @@ No logins: progress is saved in the browser only.
 ## Project structure
 
 ```
-server.js        Express server: routes and API
-public/          Front end: one page per module (vanilla HTML/CSS/JS)
-content/         Markdown curriculum, templates and sandbox scenarios
-prompts/         AI prompts, kept as files so they are open and versioned
-grants/          Grant knowledge-base build script (Notion -> search index)
-evals/           Test questions for the grant finder and prompts
-render.yaml      Render deployment settings
+server.js                  Express server: pages and read-only content
+public/                    One page per step (vanilla HTML/CSS/JS)
+public/js/                 Template engine, plan builder, progress, sandbox and report logic
+public/modules.json        The steps and their order in each path
+content/templates/         The documents, as editable markdown
+content/frameworks/        Canada and US: literacy frameworks and laws to check
+content/learning-plans/    Role matrix and the learning activities
+content/sandbox/           Practice scenarios (all made up)
+test/                      Automated tests (npm test)
+prompts/, grants/, evals/  Reserved for later phases
+render.yaml                Render deployment settings
 ```
 
 ---
@@ -84,12 +88,28 @@ The free instance is fine for testing. Switch to an always-on instance before sh
 
 ---
 
-## Build phases
+## Status
 
-1. **Forms and templates (no AI)** ← current: company profile and the purpose and promises statement are live
-2. AI personalization
-3. Practice sandbox
-4. Grant finder (RAG)
+Done:
+- Leader path: all five documents
+- Employee path: learning plan (with progress, reminders, 90-day check-in and completion record) and the browser-only practice sandbox
+- Canada and US versions
+
+Next:
+- Fund it: grant finder (B.C. and Canada first)
+- Optional anonymous team results, if a pilot needs them
+- Map Canada's national course session by session once its modules are published
+
+---
+
+## Editing content without code
+
+- **Document wording:** `content/templates/*.md`
+- **Learning activities:** `content/learning-plans/activities.json`
+- **Practice scenarios:** `content/sandbox/scenarios.json`
+- **Laws to check (dated):** `law_check` in `content/frameworks/ca.json` and `us.json`
+
+Run `npm test` after editing to catch mistakes.
 
 ---
 
