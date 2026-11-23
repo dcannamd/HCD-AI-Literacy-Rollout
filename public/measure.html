@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Measure and report · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p class="no-print"><a href="/">&larr; Home</a></p>
+    <header class="no-print">
+      <p class="eyebrow">Leader · Step 6</p>
+      <h1>Measure and report</h1>
+      <p class="lead">Your measurement plan now. At 90 days, add the numbers and it becomes your report.</p>
+      <details class="why"><summary>Why?</summary><p>Completion rates don't show whether anyone works differently. This follows four simple questions, from "did it help?" to "does it matter?" (the Kirkpatrick levels), using team totals only.</p></details>
+    </header>
+
+    <p class="notice no-print" id="profile-note"></p>
+
+    <form id="doc-form" class="form no-print">
+      <label>One outcome that matters to your organization (optional)
+        <input name="outcome" placeholder="e.g. Hours spent on client follow-ups each week">
+      </label>
+
+      <details class="setup" id="results-form">
+        <summary>At 90 days: add your results</summary>
+        <div class="row">
+          <label>Period
+            <input name="period" placeholder="e.g. January to March 2027">
+          </label>
+          <label>People who responded
+            <input name="responses" inputmode="numeric" placeholder="e.g. 24">
+          </label>
+        </div>
+        <p class="hint">Start and 90-day numbers. Leave blank what you didn't measure.</p>
+        <div class="results-grid">
+          <span></span><strong>Start</strong><strong>90 days</strong>
+          <span>Found it useful (1 to 5)</span><span></span><input name="pulse_end" aria-label="Found it useful, 90 days">
+          <span>Confidence (1 to 5)</span><input name="conf_start" aria-label="Confidence, start"><input name="conf_end" aria-label="Confidence, 90 days">
+          <span>Teams using approved tools</span><input name="approved_start" aria-label="Teams using approved tools, start"><input name="approved_end" aria-label="Teams using approved tools, 90 days">
+          <span>Unapproved tools in use</span><input name="unapproved_start" aria-label="Unapproved tools, start"><input name="unapproved_end" aria-label="Unapproved tools, 90 days">
+          <span>Data incidents</span><input name="incidents_start" aria-label="Data incidents, start"><input name="incidents_end" aria-label="Data incidents, 90 days">
+          <span id="outcome-label">Your outcome</span><input name="outcome_start" aria-label="Outcome, start"><input name="outcome_end" aria-label="Outcome, 90 days">
+        </div>
+        <label>You said, we did (one per line)
+          <textarea name="said_did" rows="3" placeholder="You asked for time to learn: sessions now happen during work hours."></textarea>
+        </label>
+        <label>Next 90 days (one per line)
+          <textarea name="next_steps" rows="2" placeholder="Add scenarios for managers to the practice sandbox."></textarea>
+        </label>
+      </details>
+    </form>
+
+    <div class="actions no-print">
+      <button type="button" id="copy">Copy text</button>
+      <button type="button" id="download" class="secondary">Download (.md)</button>
+      <button type="button" id="print" class="secondary">Print or save as PDF</button>
+    </div>
+    <p id="status" role="status" class="status no-print"></p>
+
+    <article id="preview" class="document" aria-label="Your measurement plan and report"></article>
+  </main>
+
+  <script src="/vendor/marked.min.js"></script>
+  <script src="/js/template.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/generator.js"></script>
+  <script src="/js/report.js"></script>
+  <script>
+    function earlier(key) {
+      try { return JSON.parse(localStorage.getItem(key)) || {}; } catch (e) { return {}; }
+    }
+    const lines = (text) => (text || '').split('\n').map((l) => l.trim()).filter(Boolean).map((l) => `- ${l}`).join('\n');
+
+    HCDGenerator.setup({
+      draftKey: 'hcd-measure-v1',
+      templateUrl: '/templates/measure-report.md',
+      filename: 'measure-and-report.md',
+      buildData: (f, profile) => {
+        // Behaviour measures follow the data sources agreed in the baseline conversation.
+        const hr = earlier('hcd-hr-script-v1');
+        const agreed = Object.keys(hr).length ? hr : { src_usage: true, src_incidents: true };
+        const behaviour = [];
+        if (agreed.src_usage) behaviour.push('approved and unapproved tool use, by team');
+        if (agreed.src_licenses) behaviour.push('active licenses');
+        if (agreed.src_incidents) behaviour.push('data incidents');
+        document.getElementById('outcome-label').textContent = f.outcome || 'Your outcome';
+        return {
+          org_name: profile.org_name,
+          today: HCDGenerator.today(),
+          behaviour: behaviour.length ? behaviour.join(', ').replace(/^./, (c) => c.toUpperCase()) : '',
+          outcome: f.outcome,
+          period: f.period,
+          results: HCDReport.resultsMarkdown(f, f.outcome),
+          said_did: lines(f.said_did),
+          next_steps: lines(f.next_steps)
+        };
+      }
+    });
+  </script>
+  <script src="/js/nav.js"></script>
+</body>
+</html>
