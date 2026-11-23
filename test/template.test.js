@@ -76,3 +76,21 @@ test('framework files cover every area the role matrix uses', () => {
     }
   }
 });
+
+test('the AI use guide shows country law notes only when AI is used in HR decisions', () => {
+  const tpl = fs.readFileSync(path.join(__dirname, '../content/templates/ai-use-guide.md'), 'utf8');
+  const base = {
+    org_name: 'Harbourview', today: 'today', tools_line: 'Use Gemini.', request_line: 'ask IT',
+    red_lines: '- Passwords', disclosure: 'Say so.', incident_contact: 'IT', review: '6 months', people_decisions: 'People decide.'
+  };
+  const without = render(tpl, base);
+  assert.ok(!/\{\{|\}\}/.test(without));
+  assert.ok(!/\[\w/.test(without.replace('[client name]', '')), 'no missing values');
+  assert.ok(!without.includes('Laws we check'));
+  for (const code of ['ca', 'us']) {
+    const law = require(`../content/frameworks/${code}.json`).law_check;
+    assert.ok(law.as_of && law.items.length >= 3 && law.sources.length, code);
+    const withLaw = render(tpl, { ...base, hr_ai: true, law_as_of: law.as_of, law_lines: law.items.map((i) => `- ${i}`).join('\n') });
+    assert.ok(withLaw.includes('Laws we check (as of November 2026)'));
+  }
+});

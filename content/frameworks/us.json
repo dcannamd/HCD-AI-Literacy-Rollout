@@ -65,5 +65,18 @@
   ],
   "sources": [
     "https://dol.gov/newsroom/releases/eta/eta20260213"
-  ]
+  ],
+  "law_check": {
+    "as_of": "November 2026",
+    "items": [
+      "**No federal AI law for employers.** Rules are set by states and cities.",
+      "**Illinois:** employees must be told when AI is used in employment decisions, and AI must not discriminate (since January 1, 2026).",
+      "**Colorado:** notice and disclosure duties for AI in consequential decisions start January 1, 2027.",
+      "**Texas, California and New York City** also regulate AI in hiring. Check your state."
+    ],
+    "sources": [
+      "https://law.washu.edu/?p=6454",
+      "https://www.ebglaw.com/insights/publications/workplace-ai-regulation-in-2026-how-employers-can-navigate-the-changing-legal-landscape"
+    ]
+  }
 }

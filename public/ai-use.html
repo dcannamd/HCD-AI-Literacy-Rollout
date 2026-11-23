@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI use guide · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p class="no-print"><a href="/">&larr; Home</a></p>
+    <header class="no-print">
+      <p class="eyebrow">Leader · Step 4</p>
+      <h1>AI use guide</h1>
+      <p class="lead">Your AI rules on one page: approved tools, red lines and what to do if something goes wrong.</p>
+      <details class="why"><summary>Why?</summary><p>People can't follow rules they can't find or understand. One short page, shared before training starts, answers the questions everyone has: which tools, what's off-limits, and is it safe to admit a mistake.</p></details>
+    </header>
+
+    <p class="notice no-print" id="profile-note"></p>
+    <p class="notice no-print">A starting point, not legal advice. Have your final guide reviewed by someone who knows employment and privacy law where you operate.</p>
+
+    <form id="doc-form" class="form no-print">
+      <label>Approved AI tools
+        <input name="tools" placeholder="e.g. Gemini, Microsoft Copilot">
+      </label>
+
+      <label>How to ask for a new tool
+        <input name="request" placeholder="e.g. ask IT">
+      </label>
+
+      <fieldset>
+        <legend>Never put these into an AI tool</legend>
+        <label class="inline"><input type="checkbox" name="red" value="Personal information about clients, customers or colleagues" checked> Personal information about people</label>
+        <label class="inline"><input type="checkbox" name="red" value="Passwords, PINs or access keys" checked> Passwords and access keys</label>
+        <label class="inline"><input type="checkbox" name="red" value="Health or financial information about anyone" checked> Health or financial information</label>
+        <label class="inline"><input type="checkbox" name="red" value="Unreleased financials, plans or anything marked confidential" checked> Confidential business information</label>
+        <label class="inline"><input type="checkbox" name="red" value="Anything covered by a confidentiality agreement" checked> Material under a confidentiality agreement</label>
+        <label>Anything else (optional)
+          <input name="red_extra" placeholder="e.g. Donor lists">
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>When should people say AI helped?</legend>
+        <label class="inline"><input type="radio" name="disclosure" value="substantial" checked> When AI drafted a substantial part</label>
+        <label class="inline"><input type="radio" name="disclosure" value="external"> When the work goes outside the organization</label>
+        <label class="inline"><input type="radio" name="disclosure" value="always"> Always</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Do you use AI in hiring or HR decisions?</legend>
+        <label class="inline"><input type="radio" name="hr_ai" value="no" checked> No</label>
+        <label class="inline"><input type="radio" name="hr_ai" value="yes"> Yes, or not sure</label>
+      </fieldset>
+
+      <div class="row">
+        <label>Who to tell if something goes wrong
+          <input name="incident" placeholder="e.g. your manager or IT">
+        </label>
+        <label>Review the guide every
+          <select name="review">
+            <option value="6 months" selected>6 months</option>
+            <option value="3 months">3 months</option>
+            <option value="year">year</option>
+          </select>
+        </label>
+      </div>
+    </form>
+
+    <div class="actions no-print">
+      <button type="button" id="copy">Copy text</button>
+      <button type="button" id="download" class="secondary">Download (.md)</button>
+      <button type="button" id="print" class="secondary">Print or save as PDF</button>
+    </div>
+    <p id="status" role="status" class="status no-print"></p>
+
+    <article id="preview" class="document" aria-label="Your AI use guide"></article>
+  </main>
+
+  <script src="/vendor/marked.min.js"></script>
+  <script src="/js/template.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/country.js"></script>
+  <script src="/js/generator.js"></script>
+  <script>
+    const DISCLOSURE = {
+      substantial: 'Say so when AI drafted a substantial part of your work.',
+      external: 'Say so when AI helped with work that goes outside the organization.',
+      always: 'Say so whenever AI helped with your work.'
+    };
+
+    // Start with the approved tools from the organization profile, if there is no draft yet.
+    const profile = HCDProfile.load();
+    try {
+      if (!localStorage.getItem('hcd-ai-use-v1') && profile.approved_tools) {
+        document.querySelector('input[name=tools]').value = profile.approved_tools;
+      }
+    } catch (e) { /* storage unavailable */ }
+
+    HCDCountry.framework(HCDCountry.get() || 'US').then((fw) => {
+      HCDGenerator.setup({
+        draftKey: 'hcd-ai-use-v1',
+        templateUrl: '/templates/ai-use-guide.md',
+        filename: 'ai-use-guide.md',
+        buildData: (f, p) => {
+          const red = (f.red || []).slice();
+          if (f.red_extra) red.push(f.red_extra);
+          const law = fw.law_check || { items: [] };
+          return {
+            org_name: p.org_name,
+            today: HCDGenerator.today(),
+            tools_line: f.tools ? `Use only approved tools: ${f.tools}.` : 'Use only tools the organization has approved.',
+            request_line: f.request || 'ask before you start',
+            red_lines: red.length ? red.map((r) => `- ${r}`).join('\n') : '- [add your red lines]',
+            disclosure: DISCLOSURE[f.disclosure] || DISCLOSURE.substantial,
+            incident_contact: f.incident,
+            hr_ai: f.hr_ai === 'yes',
+            people_decisions: f.hr_ai === 'yes'
+              ? 'AI may assist in some HR processes, but a person makes every final decision about hiring, pay, performance and discipline.'
+              : 'Hiring, pay, performance and discipline are never left to AI.',
+            law_as_of: law.as_of,
+            law_lines: law.items.map((i) => `- ${i}`).join('\n'),
+            review: f.review || '6 months'
+          };
+        }
+      });
+    });
+  </script>
+  <script src="/js/nav.js"></script>
+</body>
+</html>
