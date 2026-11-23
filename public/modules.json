@@ -1,50 +1,65 @@
 [
   {
     "slug": "profile",
-    "step": "Start here",
+    "path": "leader",
+    "step": "Leader · Step 1",
     "title": "Your organization",
-    "summary": "Tell us about your organization once. Every step uses it to tailor your documents."
+    "summary": "Tell us about your organization once. Every document uses it."
   },
   {
     "slug": "promises",
-    "step": "Step 0",
+    "path": "leader",
+    "step": "Leader · Step 2",
     "title": "Purpose and promises",
-    "summary": "Write a statement of what the program is for, and what it is not, before anything else."
+    "summary": "Say what the program is for, and what it is not, before anything else."
   },
   {
     "slug": "people",
-    "step": "Step 1",
+    "path": "leader",
+    "step": "Leader · Step 3",
     "title": "Build your baseline together",
-    "summary": "A conversation guide for HR, IT and employees to agree on an honest baseline, and soon a personal learning plan each employee owns."
+    "summary": "A conversation guide for HR, IT and employees to agree on an honest baseline, including the notice to staff."
   },
   {
-    "slug": "plan",
-    "step": "Step 1 · For every employee",
-    "title": "Your AI learning plan",
-    "summary": "A personal plan for your role, about 20 minutes a week. It stays on your device."
+    "slug": "ai-use",
+    "path": "leader",
+    "step": "Leader · Step 4",
+    "title": "AI use guide",
+    "summary": "Your AI policy, approved tools and data red lines on one plain-language page."
   },
   {
-    "slug": "practice",
-    "step": "Step 2",
-    "title": "Practice sandbox",
-    "summary": "Practise writing safe, clear prompts and catching AI errors, with made-up scenarios. No AI needed, and nothing leaves your device."
+    "slug": "launch",
+    "path": "leader",
+    "step": "Leader · Step 5",
+    "title": "Launch kit",
+    "summary": "The rollout announcement and talking points for managers, in trusted voices."
+  },
+  {
+    "slug": "measure",
+    "path": "leader",
+    "step": "Leader · Step 6",
+    "title": "Measure and report",
+    "summary": "Your measurement plan now, and your 90-day results report later."
   },
   {
     "slug": "funding",
-    "step": "Step 3",
+    "path": "leader",
+    "step": "Leader · Optional",
     "title": "Fund it",
-    "summary": "Find training grants that fit your organization, starting with B.C. and Canada."
+    "summary": "Find training grants that fit your organization, and build a grant-ready proposal."
   },
   {
-    "slug": "keep-going",
-    "step": "Step 4",
-    "title": "Keep it going",
-    "summary": "Office hours, champions, and a 90-day re-check everyone can see."
+    "slug": "plan",
+    "path": "employee",
+    "step": "Your skills · Step 1",
+    "title": "Your AI learning plan",
+    "summary": "A plan for your role, about 20 minutes a week, with your progress, reminders and 90-day check-in in one place."
   },
   {
-    "slug": "documents",
-    "step": "Output",
-    "title": "Document generator",
-    "summary": "Generate the documents your rollout needs from your company profile."
+    "slug": "practice",
+    "path": "employee",
+    "step": "Your skills · Step 2",
+    "title": "Practice sandbox",
+    "summary": "Practise writing safe, clear prompts and catching AI errors. No AI needed, and nothing leaves your device."
   }
 ]

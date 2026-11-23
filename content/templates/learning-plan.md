@@ -34,6 +34,20 @@ Suggested format for my role: {{tier_formats}}.{{#if formats}} I learn best thro
 
 **Practise safely:** use made-up details in every exercise, never real names, customer information or confidential material. The practice sandbox (/practice) checks your prompts for this and gives instant feedback, without any AI.
 
+## How this plan maps to {{framework_short}}
+
+{{foundation_intro}}
+{{#if foundation}}
+
+{{foundation}}
+{{/if}}
+{{#if principles}}
+
+It also follows the framework's delivery principles:
+
+{{principles}}
+{{/if}}
+
 ## Week by week
 
 {{weeks}}

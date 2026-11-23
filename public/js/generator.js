@@ -63,6 +63,8 @@
     fetch(opts.templateUrl)
       .then((r) => r.text())
       .then((text) => { template = text; update(); });
+
+    return { update };
   }
 
   function today() {

@@ -8,15 +8,65 @@
 </head>
 <body>
   <main class="wrap">
-    <p class="no-print"><a href="/">&larr; All steps</a></p>
+    <p class="no-print"><a href="/">&larr; Home</a></p>
     <header class="no-print">
-      <p class="eyebrow">Step 1 · For every employee</p>
+      <p class="eyebrow">Your skills · Step 1</p>
       <h1>Your AI learning plan</h1>
       <p class="lead">Answer a few questions and get a plan made for your role, about 20 minutes a week. There are no wrong answers: this is a starting point, not a test.</p>
     </header>
 
     <p class="notice no-print">Your answers and plan stay on this device. Nobody else sees them unless you choose to share.</p>
 
+    <section id="progress" class="progress-panel no-print" aria-labelledby="progress-heading">
+      <h2 id="progress-heading">My progress</h2>
+      <progress id="bar" max="100" value="0" aria-describedby="bar-text"></progress>
+      <p id="bar-text" class="bar-text"></p>
+
+      <div id="up-next" class="up-next"></div>
+
+      <div id="finished" class="finished" hidden>
+        <h3>You've finished your plan</h3>
+        <p>Do your 90-day check-in below, then view your completion record.</p>
+        <label class="field">Your name, for your record (optional, stays on this device)
+          <input id="record-name" autocomplete="name">
+        </label>
+        <div class="actions">
+          <button type="button" id="show-record">View my completion record</button>
+        </div>
+      </div>
+
+      <details id="all-sessions">
+        <summary>All sessions</summary>
+        <ol id="session-list" class="session-list"></ol>
+      </details>
+
+      <details id="reminders">
+        <summary>Add reminders to my calendar</summary>
+        <p class="hint">Download a calendar file with one 20-minute session a week and your 90-day check-in. It works with Google, Outlook and Apple calendars.</p>
+        <div class="row">
+          <label class="field">Day
+            <select id="rem-day">
+              <option value="1">Monday</option><option value="2" selected>Tuesday</option><option value="3">Wednesday</option>
+              <option value="4">Thursday</option><option value="5">Friday</option>
+            </select>
+          </label>
+          <label class="field">Time
+            <input id="rem-time" type="time" value="10:00">
+          </label>
+        </div>
+        <div class="actions"><button type="button" id="rem-download">Download calendar file</button></div>
+      </details>
+
+      <details id="checkin">
+        <summary>My 90-day check-in</summary>
+        <p class="hint">Rate the same statements again. You'll see where you started and where you are now.</p>
+        <div id="checkin-ratings"></div>
+        <div id="checkin-compare"></div>
+      </details>
+    </section>
+
+    <details id="setup" class="setup no-print">
+      <summary>Set up or change my plan</summary>
     <form id="doc-form" class="form no-print">
       <fieldset>
         <legend>Where do you work?</legend>
@@ -63,6 +113,7 @@
         </select>
       </label>
     </form>
+    </details>
 
     <div class="actions no-print">
       <button type="button" id="copy">Copy text</button>
@@ -72,6 +123,7 @@
     <p id="status" role="status" class="status no-print"></p>
 
     <article id="preview" class="document" aria-label="Your learning plan"></article>
+    <article id="record" class="document record" aria-label="Your completion record" hidden></article>
   </main>
 
   <script src="/vendor/marked.min.js"></script>
@@ -80,6 +132,7 @@
   <script src="/js/generator.js"></script>
   <script src="/js/country.js"></script>
   <script src="/js/plan.js"></script>
+  <script src="/js/progress.js"></script>
   <script>
     const AREA_SHORT = {
       understand: 'understanding AI', explore: 'finding good uses', direct: 'giving clear instructions',
@@ -130,7 +183,165 @@
         return (fw.areas[area] && fw.areas[area].label) || activities.areas[area].label;
       }
 
-      HCDGenerator.setup({
+      const state = {};
+      const $ = (id) => document.getElementById(id);
+      const el = (tag, text, cls) => {
+        const n = document.createElement(tag);
+        if (text !== undefined) n.textContent = text;
+        if (cls) n.className = cls;
+        return n;
+      };
+
+      // Open the setup form for first-time visitors only.
+      try {
+        const draft = JSON.parse(localStorage.getItem('hcd-plan-v1')) || {};
+        if (!draft.tiers || !draft.tiers.length) $('setup').open = true;
+      } catch (e) { $('setup').open = true; }
+
+      function toggleDone(key, value) {
+        const p = HCDProgress.load();
+        if (value) p.done[key] = new Date().toISOString().slice(0, 10);
+        else delete p.done[key];
+        HCDProgress.save(p);
+        gen.update();
+      }
+
+      function renderProgress() {
+        if (!state.plan) return;
+        const p = HCDProgress.load();
+        const sum = HCDProgress.summary(state.plan, p.done);
+        $('bar').value = sum.percent;
+        $('bar-text').textContent = `${sum.done} of ${sum.total} sessions done` + (sum.done ? '. Nice work.' : '. Your first session takes about 20 minutes.');
+
+        // Up next
+        const next = $('up-next');
+        next.textContent = '';
+        if (sum.next) {
+          const s = sum.next;
+          next.append(el('p', 'Up next · about 20 minutes', 'eyebrow'), el('h3', `${label(state.fw, s.area)}: ${s.title}`));
+          [['Learn (5 min)', s.learn], ['Try (10 min)', s.try], ['Reflect (5 min)', s.reflect]].forEach(([k, v]) => {
+            const para = el('p');
+            para.append(el('strong', `${k}: `), document.createTextNode(v));
+            next.append(para);
+          });
+          const actions = el('div', undefined, 'actions');
+          const btn = el('button', 'Mark as done');
+          btn.type = 'button';
+          btn.addEventListener('click', () => toggleDone(HCDProgress.sessionKey(s), true));
+          const practise = el('a', 'Practise in the sandbox', 'button secondary');
+          practise.href = '/practice';
+          actions.append(btn, practise);
+          next.append(actions);
+        }
+        next.hidden = !sum.next;
+        $('finished').hidden = !sum.complete;
+
+        // All sessions
+        const list = $('session-list');
+        list.textContent = '';
+        state.plan.weeks.forEach((week, i) => week.forEach((s) => {
+          const li = el('li');
+          const lab = el('label', undefined, 'inline');
+          const box = el('input');
+          box.type = 'checkbox';
+          box.checked = !!p.done[HCDProgress.sessionKey(s)];
+          box.addEventListener('change', () => toggleDone(HCDProgress.sessionKey(s), box.checked));
+          lab.append(box, el('span', `Week ${i + 1} · ${label(state.fw, s.area)}: ${s.title}`));
+          li.append(lab);
+          list.append(li);
+        }));
+
+        renderCheckin(p);
+      }
+
+      // 90-day check-in: the same statements, rated again.
+      function renderCheckin(p) {
+        const box = $('checkin-ratings');
+        if (!box.childElementCount) {
+          Object.entries(activities.self_assessment).forEach(([area, statement]) => {
+            const wrap = el('label', undefined, 'rating');
+            wrap.dataset.area = area;
+            const select = el('select');
+            ['', '1', '2', '3', '4', '5'].forEach((v) => select.append(new Option(v || 'Choose…', v)));
+            select.value = p.after[area] || '';
+            select.addEventListener('change', () => {
+              const q = HCDProgress.load();
+              q.after[area] = select.value;
+              HCDProgress.save(q);
+              renderCheckin(q);
+            });
+            wrap.append(el('span', statement), select);
+            box.append(wrap);
+          });
+        }
+        box.querySelectorAll('[data-area]').forEach((w) => { w.hidden = !state.plan.areas.includes(w.dataset.area); });
+
+        const compare = $('checkin-compare');
+        compare.textContent = '';
+        const rows = state.plan.areas.filter((a) => p.after[a]);
+        if (!rows.length) return;
+        const table = el('table', undefined, 'compare-table');
+        const head = el('tr');
+        ['Statement', 'Start', 'Now'].forEach((h) => head.append(el('th', h)));
+        table.append(head);
+        rows.forEach((a) => {
+          const tr = el('tr');
+          const before = state.before[a] || '–';
+          const after = p.after[a];
+          const change = state.before[a] ? Number(after) - Number(state.before[a]) : null;
+          tr.append(el('td', label(state.fw, a)), el('td', before), el('td', change > 0 ? `${after} (up ${change})` : after));
+          table.append(tr);
+        });
+        compare.append(table);
+      }
+
+      // Completion record, printable on its own.
+      $('show-record').addEventListener('click', () => {
+        const p = HCDProgress.load();
+        const dates = Object.values(p.done).sort();
+        const name = $('record-name').value.trim();
+        const rec = $('record');
+        rec.textContent = '';
+        rec.append(el('p', 'Completion record', 'eyebrow'), el('h1', name || 'AI learning plan completed'));
+        rec.append(el('p', `${name ? 'Completed an AI learning plan' : 'Completed'} for ${HCDTemplate.joinList(state.tierLabels)}, aligned with ${state.country === 'CA' ? "Canada's AI literacy progression (understand, use, build)" : 'the US Department of Labor AI Literacy Framework'}.`));
+        rec.append(el('p', `${state.plan.sessionCount} sessions, from ${dates[0]} to ${dates[dates.length - 1]}.`));
+        rec.append(el('h2', 'Goals worked on'));
+        const ul = el('ul');
+        state.plan.areas.forEach((a) => ul.append(el('li', `${label(state.fw, a)}: ${activities.areas[a].goal}`)));
+        rec.append(ul);
+        const rated = state.plan.areas.filter((a) => p.after[a] && state.before[a]);
+        if (rated.length) {
+          rec.append(el('h2', 'Confidence, start and now (1 to 5)'));
+          const ul2 = el('ul');
+          rated.forEach((a) => ul2.append(el('li', `${label(state.fw, a)}: ${state.before[a]} to ${p.after[a]}`)));
+          rec.append(ul2);
+        }
+        rec.append(el('p', 'This is a record of completing a self-directed learning plan. It is not a certification.', 'hint'));
+        const actions = el('div', undefined, 'actions no-print');
+        const print = el('button', 'Print or save as PDF');
+        print.type = 'button';
+        print.addEventListener('click', () => {
+          document.body.classList.add('print-record');
+          window.print();
+          document.body.classList.remove('print-record');
+        });
+        actions.append(print);
+        rec.append(actions);
+        rec.hidden = false;
+        rec.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      $('rem-download').addEventListener('click', () => {
+        const ics = HCDProgress.buildIcs(state.plan, { weekday: Number($('rem-day').value), time: $('rem-time').value });
+        const blob = new Blob([ics], { type: 'text/calendar' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'ai-learning-plan.ics';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      const gen = HCDGenerator.setup({
         draftKey: 'hcd-plan-v1',
         templateUrl: '/templates/learning-plan.md',
         filename: 'my-ai-learning-plan.md',
@@ -164,15 +375,20 @@
             goals = plan.areas.map(goalLine).join('\n');
           }
 
+          state.plan = plan; state.fw = fw; state.country = country; state.before = ratings; state.tiers = tiers;
+          const done = HCDProgress.load().done;
           const weeks = plan.weeks.map((week, i) => {
             const parts = week.map((s) => {
               const step = s.of > 1 ? ` (${s.number} of ${s.of})` : '';
-              return `**${label(fw, s.area)}${step}: ${s.title}**\n\n- *Learn:* ${s.learn}\n- *Try:* ${s.try}\n- *Reflect:* ${s.reflect}`;
+              const tick = done[HCDProgress.sessionKey(s)] ? '✓ ' : '';
+              return `**${tick}${label(fw, s.area)}${step}: ${s.title}**\n\n- *Learn:* ${s.learn}\n- *Try:* ${s.try}\n- *Reflect:* ${s.reflect}`;
             });
             return `### Week ${i + 1}\n\n${parts.join('\n\n')}`;
           }).join('\n\n');
 
           const tierInfo = tiers.map((t) => roleTiers.tiers[t]).filter(Boolean);
+          state.tierLabels = tierInfo.map((t) => t.label);
+          setTimeout(renderProgress, 0);
           const resources = (fw.resources || [])
             .filter((r) => country === 'CA' || tiers.includes('builders') || tiers.includes('executives'))
             .map((r) => `- **${r.label}:** ${r.note}`)
@@ -196,7 +412,11 @@
             tier_notes: tierInfo.filter((t) => t.note).map((t) => `*${t.label}:* ${t.note}`).join(' '),
             weeks,
             secure: f.secure || 'I can come back and add this any time.',
-            resources
+            resources,
+            framework_short: country === 'CA' ? "Canada's AI literacy progression" : 'the DOL AI Literacy Framework',
+            foundation_intro: fw.foundation_intro,
+            foundation: fw.foundation ? `**${fw.foundation.label}** (about ${fw.foundation.minutes} minutes). ${fw.foundation.where}. ${fw.foundation.how}` : '',
+            principles: (fw.principles || []).map((p) => `- **${p.label}.** ${p.how}`).join('\n')
           };
         }
       });

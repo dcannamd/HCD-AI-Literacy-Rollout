@@ -4,17 +4,66 @@
   "short": "DOL AI Literacy Framework",
   "status": "Official US framework with five content areas.",
   "groups": [
-    { "id": "all", "label": "Five content areas", "areas": ["understand", "explore", "direct", "evaluate", "responsible"] }
+    {
+      "id": "all",
+      "label": "Five content areas",
+      "areas": [
+        "understand",
+        "explore",
+        "direct",
+        "evaluate",
+        "responsible"
+      ]
+    }
   ],
   "areas": {
-    "understand": { "label": "Understand AI principles" },
-    "explore": { "label": "Explore AI uses" },
-    "direct": { "label": "Direct AI effectively" },
-    "evaluate": { "label": "Evaluate AI outputs" },
-    "responsible": { "label": "Use AI responsibly" }
+    "understand": {
+      "label": "Understand AI principles"
+    },
+    "explore": {
+      "label": "Explore AI uses"
+    },
+    "direct": {
+      "label": "Direct AI effectively"
+    },
+    "evaluate": {
+      "label": "Evaluate AI outputs"
+    },
+    "responsible": {
+      "label": "Use AI responsibly"
+    }
   },
   "risk_framework": "NIST AI Risk Management Framework",
   "resources": [
-    { "label": "NIST AI Risk Management Framework", "note": "How the organization manages AI risk" }
+    {
+      "label": "NIST AI Risk Management Framework",
+      "note": "How the organization manages AI risk"
+    }
+  ],
+  "foundation_intro": "Every session in this plan sits under one of the five foundational content areas in the US Department of Labor's AI Literacy Framework (February 2026).",
+  "principles": [
+    {
+      "label": "Hands-on, experiential learning",
+      "how": "Every session includes a 10-minute 'try' step, and the practice sandbox gives instant feedback."
+    },
+    {
+      "label": "Learning embedded in the context of work",
+      "how": "Practice uses a real task from your own job, with made-up details."
+    },
+    {
+      "label": "Human skills alongside AI skills",
+      "how": "Reflection, judgment and knowing when not to use AI are part of every plan."
+    },
+    {
+      "label": "Pathways for continued learning",
+      "how": "The plan ends with a 90-day check-in and points to deeper learning for your role."
+    },
+    {
+      "label": "Designed to change as AI changes",
+      "how": "All content lives in editable files, so it can be updated as tools evolve."
+    }
+  ],
+  "sources": [
+    "https://dol.gov/newsroom/releases/eta/eta20260213"
   ]
 }

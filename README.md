@@ -19,16 +19,28 @@ Built by [Dana Cannam](https://www.danacannam.com).
 
 ---
 
-## The steps
+## Two paths
 
-| Step | Module | What it does |
+**I'm leading an AI rollout** (HR, operations leads, consultants). Five documents to share:
+
+| Step | Page | Document |
 | --- | --- | --- |
-| 0 | Purpose and promises | Leadership states what the program is for, and what it is not |
-| 1 | People | HR conversation script (with IT and employees) + a personal learning plan |
-| 2 | Learn and practise | The shared core (about 80% the same at any company) + a prompt practice sandbox |
-| 3 | Funding | A grant finder for training funding (B.C. and Canada first) |
-| 4 | Keep it going | Office hours, champions, and a 90-day re-check |
-| — | Documents | Generates the documents the rollout needs |
+| 1 | Your organization | Profile used by every document |
+| 2 | Purpose and promises | What the program is, and is not |
+| 3 | Build your baseline together | Conversation guide for HR, IT and employees, with the notice to staff |
+| 4 | AI use guide | Policy, approved tools and data red lines *(coming)* |
+| 5 | Launch kit | Announcement and manager talking points *(coming)* |
+| 6 | Measure and report | Measurement plan, then the 90-day report *(coming)* |
+| Optional | Fund it | Grant finder and grant-ready proposal *(coming)* |
+
+**I'm building my AI skills** (every employee). One living document:
+
+| Step | Page | What it does |
+| --- | --- | --- |
+| 1 | Your AI learning plan | Role-based sessions of about 20 minutes, mapped to the US DOL framework or Canada's Understand, Use, Build progression, with progress, calendar reminders, a 90-day check-in and a completion record |
+| 2 | Practice sandbox | Safe, browser-only practice: clear prompts, red lines, spotting errors |
+
+No logins: progress is saved in the browser only.
 
 ---
 

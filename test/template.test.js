@@ -37,7 +37,7 @@ test('the purpose and promises template renders with no leftover tags', () => {
     org_name: 'Comox Valley Food Bank', today: 'November 21, 2026', role_tiers: 'frontline employees',
     purpose_note: 'Note.', start_date: 'January 2027', data_promise: 'P.', union: true, union_name: 'CUPE',
     data_detail: 'D.', approved_tools: 'Gemini', policy_line: 'Policy.', contact: 'HR',
-    languages: 'French', signed_by: 'The leadership team'
+    languages: 'French', signed_by: 'The leadership team', plan_link: 'https://example.org/plan'
   });
   assert.ok(!/\{\{|\}\}/.test(full));
   assert.ok(!/\[\w/.test(full), 'no missing-value markers when everything is filled');
