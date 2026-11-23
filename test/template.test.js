@@ -94,3 +94,19 @@ test('the AI use guide shows country law notes only when AI is used in HR decisi
     assert.ok(withLaw.includes('Laws we check (as of November 2026)'));
   }
 });
+
+test('the launch kit renders with and without the optional parts', () => {
+  const tpl = fs.readFileSync(path.join(__dirname, '../content/templates/launch-kit.md'), 'utf8');
+  const full = render(tpl, {
+    org_name: 'Harbourview', today: 'today', senders: 'Maria, Sam and Lee', launch_date: 'January 12',
+    plan_link: 'https://example.org/plan', work_time: true, peer_quote: 'It was easy.', peer_name: 'Lee',
+    contact: 'Sam', office_hours: 'Thursdays', data_answer: 'Team totals only.', tools: 'Gemini'
+  });
+  assert.ok(!/\{\{|\}\}/.test(full));
+  assert.ok(!/\[\w/.test(full), 'no missing values');
+  assert.ok(full.includes('*"It was easy."* (Lee)'));
+  const bare = render(tpl, { org_name: 'H', today: 't', senders: 'S', plan_link: 'p', contact: 'c', data_answer: 'd' });
+  assert.ok(!bare.includes('drop in'));
+  assert.ok(!bare.includes('work time'));
+  assert.ok(bare.split('\n').every((l) => !/^\{\{/.test(l)));
+});

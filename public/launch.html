@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Launch kit · AI Literacy Rollout Planner</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="wrap">
+    <p class="no-print"><a href="/">&larr; Home</a></p>
+    <header class="no-print">
+      <p class="eyebrow">Leader · Step 5</p>
+      <h1>Launch kit</h1>
+      <p class="lead">The announcement, plus talking points so managers can answer worries well.</p>
+      <details class="why"><summary>Why?</summary><p>People trust a message more when it comes from HR and a colleague, not only leadership. And most worries surface in conversations with managers, so they need simple, honest answers ready.</p></details>
+    </header>
+
+    <p class="notice no-print" id="profile-note"></p>
+
+    <form id="doc-form" class="form no-print">
+      <label>Who sends it
+        <input name="senders" placeholder="e.g. Maria (Executive Director), Sam (HR) and Lee (Front desk)">
+        <span class="hint">Include HR and a colleague, not only leadership.</span>
+      </label>
+
+      <label>Launch date (optional)
+        <input name="launch_date" placeholder="e.g. January 12">
+      </label>
+
+      <div class="row">
+        <label>A colleague's quote (optional)
+          <input name="peer_quote" placeholder="e.g. I was nervous too. The first session was easy.">
+        </label>
+        <label>Their name and role
+          <input name="peer_name" placeholder="e.g. Lee, front desk">
+        </label>
+      </div>
+
+      <label>Who answers questions
+        <input name="contact" placeholder="e.g. Sam in HR">
+      </label>
+
+      <label>Drop-in help (optional)
+        <input name="office_hours" placeholder="e.g. Thursday office hours, 2 to 3 p.m.">
+      </label>
+
+      <label class="inline"><input type="checkbox" name="work_time" value="yes" checked> Learning happens during work time</label>
+    </form>
+
+    <div class="actions no-print">
+      <button type="button" id="copy">Copy text</button>
+      <button type="button" id="download" class="secondary">Download (.md)</button>
+      <button type="button" id="print" class="secondary">Print or save as PDF</button>
+    </div>
+    <p id="status" role="status" class="status no-print"></p>
+
+    <article id="preview" class="document" aria-label="Your launch kit"></article>
+  </main>
+
+  <script src="/vendor/marked.min.js"></script>
+  <script src="/js/template.js"></script>
+  <script src="/js/profile.js"></script>
+  <script src="/js/generator.js"></script>
+  <script>
+    // Reuse answers from earlier leader steps, so the kit matches what was promised.
+    function earlier(key) {
+      try { return JSON.parse(localStorage.getItem(key)) || {}; } catch (e) { return {}; }
+    }
+    const DATA_ANSWER = {
+      browser: 'Your plan and practice stay on your device. We never see them.',
+      anonymous: 'We only see anonymous team totals, for groups of 5 or more.',
+      'self-hosted': 'We only see team totals, never individual answers.'
+    };
+
+    HCDGenerator.setup({
+      draftKey: 'hcd-launch-v1',
+      templateUrl: '/templates/launch-kit.md',
+      filename: 'launch-kit.md',
+      buildData: (f, profile) => {
+        const promises = earlier('hcd-promises-v1');
+        const aiUse = earlier('hcd-ai-use-v1');
+        return {
+          org_name: profile.org_name,
+          today: HCDGenerator.today(),
+          senders: f.senders,
+          launch_date: f.launch_date,
+          plan_link: `${location.origin}/plan`,
+          work_time: f.work_time,
+          peer_quote: f.peer_quote,
+          peer_name: f.peer_name || 'a colleague',
+          contact: f.contact || promises.contact,
+          office_hours: f.office_hours,
+          data_answer: DATA_ANSWER[promises.data_level] || DATA_ANSWER.browser,
+          tools: aiUse.tools || profile.approved_tools
+        };
+      }
+    });
+  </script>
+  <script src="/js/nav.js"></script>
+</body>
+</html>

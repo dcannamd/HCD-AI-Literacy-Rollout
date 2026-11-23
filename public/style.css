@@ -174,3 +174,13 @@ a.button.secondary { background: transparent; color: var(--accent); }
 @media print {
   .full-plan { border: none; padding: 0; margin: 0; }
 }
+
+/* 90-day results entry */
+.results-grid { display: grid; grid-template-columns: 1fr 80px 80px; gap: 8px 10px; align-items: center; margin: 8px 0 16px; }
+.results-grid input { font: inherit; padding: 8px; border: 1px solid #c9c9c9; border-radius: 8px; width: 100%; }
+.results-grid strong { font-size: 0.85rem; color: var(--muted); }
+#results-form .row, #results-form > label { margin-top: 12px; }
+
+/* Larger organizations */
+.larger { margin: 8px 0 40px; padding: 20px; border-radius: 12px; background: #f4f6fb; }
+.larger h2 { margin-top: 0; font-size: 1.2rem; }
