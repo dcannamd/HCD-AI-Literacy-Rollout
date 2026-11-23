@@ -76,31 +76,31 @@
     {
       id: 'role',
       label: 'Role',
-      tip: 'Tell the AI who to act as, e.g. "You are a friendly front-desk coordinator."',
+      tip: 'Who should the AI act as?',
       test: /\b(you are|you're|act as|acting as|as an? [a-z]+|take the role|pretend)\b/i
     },
     {
       id: 'task',
       label: 'Task',
-      tip: 'Say exactly what you want done, e.g. "Draft a reply…", "Summarize…".',
+      tip: 'What exactly should it do?',
       test: /\b(write|draft|summari[sz]e|create|list|explain|rewrite|translate|compare|suggest|outline|edit|review|plan|reply|respond|turn|make|give me|help me)\b/i
     },
     {
       id: 'context',
       label: 'Context',
-      tip: 'Explain the situation and the audience, e.g. "The reader is a new volunteer who…".',
+      tip: "Who is it for, and what's the situation?",
       test: /\b(because|audience|reader|readers|background|context|situation|for (?:a|an|our|my|the|new|busy)\b|they are|they're|who (?:is|are|has|have)|we are|we're|our (?:team|clients|customers|organization))/i
     },
     {
       id: 'format',
       label: 'Format',
-      tip: 'Say what the answer should look like, e.g. "Three short bullet points" or "Under 100 words, warm tone."',
+      tip: 'How long, what tone, what shape?',
       test: /\b(bullet|bullets|list|table|paragraph|paragraphs|words|sentences|email|tone|format|short|brief|headings|steps|plain language|friendly|formal|under \d+|no more than)\b/i
     },
     {
       id: 'example',
       label: 'Example',
-      tip: 'Show an example of what good looks like, e.g. "Here\'s one we liked: …".',
+      tip: 'Show what good looks like.',
       test: /\b(example|e\.g\.|for instance|like this|such as|sample|here's one|here is one)\b|"[^"]{12,}"/i
     }
   ];
@@ -110,10 +110,10 @@
     const parts = PARTS.map((p) => ({ id: p.id, label: p.label, tip: p.tip, present: p.test.test(text) }));
     const score = parts.filter((p) => p.present).length;
     let summary;
-    if (words < 8) summary = 'Keep going: a few more details will make a big difference.';
-    else if (score >= 4) summary = 'Strong instructions. The AI has what it needs.';
-    else if (score >= 2) summary = 'A good start. Add the missing parts to get a more useful first answer.';
-    else summary = 'Too vague for a useful answer. Try adding a role, the context and the format you want.';
+    if (words < 8) summary = 'Keep going: add a few more details.';
+    else if (score >= 4) summary = 'Strong. The AI has what it needs.';
+    else if (score >= 2) summary = 'Good start. Add the missing parts.';
+    else summary = 'Too vague. Add a role, context and format.';
     return { parts, score, words, summary };
   }
 

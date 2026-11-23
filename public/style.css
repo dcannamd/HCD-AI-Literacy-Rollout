@@ -163,3 +163,14 @@ a.button.secondary { background: transparent; color: var(--accent); }
 @media print {
   body.print-record main > *:not(#record) { display: none !important; }
 }
+
+/* "Why?" disclosures and the folded full plan */
+.why { margin: -24px 0 32px; font-size: 0.95rem; color: var(--muted); }
+.why summary { cursor: pointer; color: var(--accent); font-weight: 600; width: max-content; }
+.why p { margin: 6px 0 0; }
+.full-plan { margin: 24px 0; padding: 16px 20px; border: 1px solid var(--line); border-radius: 12px; }
+.full-plan > summary { font-weight: 600; cursor: pointer; }
+.full-plan .actions { margin-top: 16px; }
+@media print {
+  .full-plan { border: none; padding: 0; margin: 0; }
+}

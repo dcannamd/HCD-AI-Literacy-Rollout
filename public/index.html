@@ -12,12 +12,12 @@
     <header>
       <p class="eyebrow">Free and open source</p>
       <h1>AI Literacy Rollout Planner</h1>
-      <p class="lead">Roll out AI literacy the human-centered way: bring people in first, practise safely, and measure what matters.</p>
+      <p class="lead">Roll out AI literacy the human-centered way.</p>
     </header>
 
     <section id="country-picker" class="country" aria-labelledby="country-heading">
       <h2 id="country-heading">Where is your organization?</h2>
-      <p class="hint">This sets the AI literacy framework and resources the planner uses. You can change it any time.</p>
+      
       <div class="actions">
         <button type="button" data-country="CA" class="secondary">Canada</button>
         <button type="button" data-country="US" class="secondary">United States</button>
@@ -29,14 +29,14 @@
     <div class="paths">
       <section class="path" aria-labelledby="leader-heading">
         <h3 id="leader-heading">I'm leading an AI rollout</h3>
-        <p>For HR, operations leads and consultants. Plan the rollout and create five documents to share with your organization.</p>
+        <p>For HR, operations leads and consultants. Create five documents to share.</p>
         <ol id="leader-steps" class="path-steps"></ol>
         <a class="button" href="/profile">Start the leader path</a>
       </section>
 
       <section class="path" aria-labelledby="employee-heading">
         <h3 id="employee-heading">I'm building my AI skills</h3>
-        <p>For every employee. Make a learning plan for your role, about 20 minutes a week, and practise safely. Everything stays on your device.</p>
+        <p>For every employee. About 20 minutes a week, on your own device.</p>
         <ol id="employee-steps" class="path-steps"></ol>
         <a class="button" href="/plan">Start my learning plan</a>
       </section>
@@ -65,10 +65,9 @@
         note.hidden = false;
         note.textContent = '';
         const strong = document.createElement('strong');
-        strong.textContent = `${HCDCountry.LABELS[code]} version: ${fw.name}.`;
+        strong.textContent = `Using ${fw.name}.`;
         const p = document.createElement('p');
-        p.textContent = fw.status;
-        note.append(strong, p);
+        note.append(strong);
       });
     }
 

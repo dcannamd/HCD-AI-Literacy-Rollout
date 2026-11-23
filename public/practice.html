@@ -12,10 +12,10 @@
     <header>
       <p class="eyebrow">Your skills · Step 2</p>
       <h1>Practice sandbox</h1>
-      <p class="lead">Practise the skills that matter most, with made-up scenarios and instant feedback. Each exercise takes about 10 minutes.</p>
+      <p class="lead">Three 10-minute exercises with instant feedback.</p>
     </header>
 
-    <p class="notice">No AI runs on this page, and nothing you type leaves your device. Mistakes here are free: that's the point.</p>
+    <p class="notice">No AI, and nothing you type leaves your device.</p>
 
     <nav class="tabs" aria-label="Exercises">
       <button type="button" data-tab="prompt" aria-pressed="true">1. Write a safe, clear prompt</button>
@@ -61,7 +61,7 @@
         <p id="spot-source"></p>
       </div>
       <p><strong>Someone asked an AI:</strong> <span id="spot-prompt"></span></p>
-      <p class="hint">Tap every sentence you wouldn't trust without checking. Then check your answers.</p>
+      <p class="hint">Tap anything you wouldn't trust without checking.</p>
       <div id="spot-sentences" class="sentences"></div>
       <div class="actions">
         <button type="button" id="spot-check">Check my answers</button>
@@ -131,7 +131,7 @@
         box.textContent = '';
         if (lines.length) {
           box.className = 'feedback warn';
-          box.append(el('p', `Remove ${lines.length === 1 ? 'this' : 'these'} before you use any AI tool:`, 'summary'));
+          box.append(el('p', `Remove ${lines.length === 1 ? 'this' : 'these'} first:`, 'summary'));
           const ul = el('ul');
           lines.forEach((l) => {
             const li = el('li');
@@ -141,7 +141,7 @@
           box.append(ul);
         } else if (value.trim()) {
           box.className = 'feedback ok';
-          box.append(el('p', 'No red lines found. Nothing personal or confidential in your prompt.', 'summary'));
+          box.append(el('p', 'No red lines. Nothing personal or confidential.', 'summary'));
         } else {
           box.className = 'feedback';
         }
@@ -165,7 +165,7 @@
       fillSelect($('prompt-scenario'), data.prompt, (s) => {
         current = s;
         $('prompt-situation').textContent = s.situation;
-        $('prompt-notes-label').textContent = `${s.notes_label} (made up). Don't copy these as they are.`;
+        $('prompt-notes-label').textContent = `${s.notes_label} (made up, don't copy as is)`;
         $('prompt-notes').textContent = s.notes;
         text.value = s.starter;
         checkPrompt();
@@ -174,8 +174,8 @@
 
       const tools = profile.approved_tools;
       $('handoff-text').textContent = tools
-        ? `When your prompt has no red lines, copy it and try it in an approved tool: ${tools}. Then compare the answer with what you expected.`
-        : "When your prompt has no red lines, copy it and try it in your organization's approved AI tool. Then compare the answer with what you expected.";
+        ? `Once it's clean, copy it into ${tools}.`
+        : "Once it's clean, copy it into your approved AI tool.";
 
       $('copy-prompt').addEventListener('click', async () => {
         try {
@@ -231,7 +231,7 @@
         section('Caught', r.caught);
         section('Missed', r.missed);
         section('Flagged but fine', r.falseAlarms);
-        box.append(el('p', 'Flagging something that turns out to be fine is not a failure. Checking is the habit we want.', 'hint'));
+        box.append(el('p', 'Over-checking is fine. Checking is the habit we want.', 'hint'));
       });
 
       // ---------- Exercise 3: compare ----------
