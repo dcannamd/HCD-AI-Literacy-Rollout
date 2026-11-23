@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // The modules of the app. Each gets its own page at /<slug>,
-// so every article on danacannam.com can link straight to its module.
+// so every article on danacannamdesign.com can link straight to its module.
 const MODULES = require('./public/modules.json');
 
 app.use(express.json({ limit: '100kb' }));

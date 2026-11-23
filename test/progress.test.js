@@ -47,3 +47,18 @@ test('both countries map the plan to their foundational framework', () => {
   assert.ok(us.foundation_intro && us.principles.length >= 5);
   assert.ok(ca.foundation_intro && ca.foundation.minutes === 90);
 });
+
+test('a progress backup round-trips, and other files are rejected plainly', () => {
+  const { makeBackup, readBackup } = require('../public/js/progress.js');
+  const store = new Map([
+    ['hcd-plan-v1', JSON.stringify({ tiers: ['frontline'] })],
+    ['hcd-progress-v1', JSON.stringify({ done: { 'understand-1': '2026-11-22' } })],
+    ['hcd-profile-v1', JSON.stringify({ org_name: 'Not included' })]
+  ]);
+  const backup = makeBackup({ getItem: (k) => store.get(k) || null });
+  assert.deepStrictEqual(Object.keys(backup.data).sort(), ['hcd-plan-v1', 'hcd-progress-v1']);
+  const entries = readBackup(JSON.parse(JSON.stringify(backup)));
+  assert.strictEqual(entries.length, 2);
+  assert.throws(() => readBackup({ hello: 'world' }), /isn't a learning plan backup/);
+  assert.throws(() => readBackup({ app: 'hcd-ai-literacy-rollout', type: 'learning-plan-backup', data: {} }), /empty/);
+});

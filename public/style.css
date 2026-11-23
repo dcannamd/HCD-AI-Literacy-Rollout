@@ -1,4 +1,4 @@
-/* Placeholder styles. Swap in your Framer fonts and colours so the app matches danacannam.com. */
+/* Placeholder styles. Swap in your Framer fonts and colours so the app matches danacannamdesign.com. */
 :root {
   --ink: #1d1d1f;
   --muted: #5f6368;
@@ -184,3 +184,11 @@ a.button.secondary { background: transparent; color: var(--accent); }
 /* Larger organizations */
 .larger { margin: 8px 0 40px; padding: 20px; border-radius: 12px; background: #f4f6fb; }
 .larger h2 { margin-top: 0; font-size: 1.2rem; }
+
+/* Larger tap targets for checkboxes and radio buttons (WCAG 2.2, 2.5.8) */
+input[type=checkbox], input[type=radio] { width: 22px; height: 22px; flex: none; accent-color: var(--accent); }
+.form label.inline input, .session-list input { margin-top: 1px; }
+
+/* Backup and feedback */
+.file-button { cursor: pointer; }
+.feedback-link { margin-top: 32px; text-align: center; font-size: 0.95rem; }

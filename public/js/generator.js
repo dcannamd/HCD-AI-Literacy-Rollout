@@ -28,6 +28,10 @@
       lastMarkdown = HCDTemplate.render(template, opts.buildData(answers, HCDProfile.load()));
       // Values are HTML-escaped by the template engine before markdown is parsed.
       preview.innerHTML = marked.parse(lastMarkdown);
+      // Task-list boxes in documents are read-only; give each one its item's text as a label.
+      preview.querySelectorAll('li > input[type=checkbox]').forEach((box) => {
+        box.setAttribute('aria-label', box.parentElement.textContent.trim());
+      });
     }
 
     form.addEventListener('input', update);
