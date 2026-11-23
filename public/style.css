@@ -192,3 +192,21 @@ input[type=checkbox], input[type=radio] { width: 22px; height: 22px; flex: none;
 /* Backup and feedback */
 .file-button { cursor: pointer; }
 .feedback-link { margin-top: 32px; text-align: center; font-size: 0.95rem; }
+
+/* Tables in documents: a visible grid, so values never look like they're floating */
+.document table, .compare-table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 0.95rem; }
+.document th, .document td, .compare-table th, .compare-table td { border: 1px solid #cfd3da; padding: 8px 10px; text-align: left; vertical-align: top; }
+.document th, .compare-table th { background: #f4f6fb; font-weight: 600; }
+.document tbody tr:nth-child(even) td { background: #fafbfc; }
+@media print {
+  .document th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Measure page: Now / At 90 days tabs */
+.mode-tabs { display: flex; gap: 8px; margin: 8px 0 16px; }
+.field-hint { font-weight: 400; font-size: 0.9rem; color: #b3261e; }
+.field-hint.ok { color: var(--muted); }
+@media (max-width: 560px) {
+  .document { padding: 20px 16px; }
+  .document th, .document td { padding: 6px 8px; }
+}

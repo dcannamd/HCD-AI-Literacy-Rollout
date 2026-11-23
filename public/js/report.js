@@ -32,7 +32,7 @@
   function resultsMarkdown(f, outcomeLabel) {
     const n = num(f.responses);
     const filled = ROWS.some((r) => (f[`${r.id}_end`] || '').trim());
-    if (!filled) return 'Fill this in at 90 days. Add your numbers under \"At 90 days\" and this section becomes your report.';
+    if (!filled) return 'Add your 90-day numbers above, and this section becomes your report.';
     if (n === null) return 'Add how many people responded. Results are only shown for 5 or more.';
     if (n < MIN_GROUP) return `Only ${n} responses: not reported, to protect privacy. Results need at least ${MIN_GROUP}.`;
 

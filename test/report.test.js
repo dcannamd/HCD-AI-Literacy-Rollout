@@ -6,7 +6,7 @@ const { resultsMarkdown, change } = require('../public/js/report.js');
 const { render } = require('../public/js/template.js');
 
 test('before 90 days, the report says to fill it in later', () => {
-  assert.match(resultsMarkdown({}), /Fill this in at 90 days/);
+  assert.match(resultsMarkdown({}), /Add your 90-day numbers above/);
 });
 
 test('results are never shown for fewer than 5 responses', () => {
