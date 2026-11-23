@@ -110,11 +110,13 @@
     });
 
     document.getElementById('clear').addEventListener('click', () => {
+      if (!confirm('Clear all your organization details from this browser? This cannot be undone.')) return;
       HCDProfile.clear();
       form.reset();
       status.textContent = 'Your answers were cleared from this browser.';
     });
   </script>
   <script src="/js/nav.js"></script>
+  <script src="/js/feedback.js"></script>
 </body>
 </html>

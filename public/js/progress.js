@@ -93,7 +93,30 @@
     return lines.join('\r\n') + '\r\n';
   }
 
-  const api = { KEY, sessionKey, load, save, summary, buildIcs, firstSlot };
+  // ---------- Save to / restore from a file, so a cleared browser doesn't lose progress ----------
+
+  const BACKUP_KEYS = ['hcd-plan-v1', KEY];
+
+  function makeBackup(store) {
+    const data = {};
+    BACKUP_KEYS.forEach((k) => {
+      const v = store.getItem(k);
+      if (v) data[k] = JSON.parse(v);
+    });
+    return { app: 'hcd-ai-literacy-rollout', type: 'learning-plan-backup', version: 1, saved: new Date().toISOString(), data };
+  }
+
+  // Returns the entries to restore, or throws with a plain-language reason.
+  function readBackup(obj) {
+    if (!obj || obj.app !== 'hcd-ai-literacy-rollout' || obj.type !== 'learning-plan-backup') {
+      throw new Error("This file isn't a learning plan backup from this app.");
+    }
+    const entries = Object.entries(obj.data || {}).filter(([k, v]) => BACKUP_KEYS.includes(k) && v && typeof v === 'object');
+    if (!entries.length) throw new Error('This backup file is empty.');
+    return entries;
+  }
+
+  const api = { KEY, sessionKey, load, save, summary, buildIcs, firstSlot, makeBackup, readBackup, BACKUP_KEYS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HCDProgress = api;
 })(this);

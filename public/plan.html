@@ -57,6 +57,18 @@
         <div class="actions"><button type="button" id="rem-download">Download calendar file</button></div>
       </details>
 
+      <details id="backup">
+        <summary>Save or restore my progress</summary>
+        <p class="hint">Your progress lives in this browser. Save a file to keep it safe, or to move it to another device.</p>
+        <div class="actions">
+          <button type="button" id="backup-save">Save to a file</button>
+          <label class="button secondary file-button">Restore from a file
+            <input type="file" id="backup-restore" accept="application/json,.json" hidden>
+          </label>
+        </div>
+        <p id="backup-status" role="status" class="status"></p>
+      </details>
+
       <details id="checkin">
         <summary>My 90-day check-in</summary>
         <p class="hint">Rate yourself again and compare.</p>
@@ -334,6 +346,35 @@
         rec.scrollIntoView({ behavior: 'smooth' });
       });
 
+      $('backup-save').addEventListener('click', () => {
+        try {
+          const backup = HCDProgress.makeBackup(localStorage);
+          const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'my-ai-learning-plan-backup.json';
+          a.click();
+          URL.revokeObjectURL(a.href);
+          $('backup-status').textContent = 'Saved. Keep the file somewhere safe, like your email or cloud storage.';
+        } catch (e) {
+          $('backup-status').textContent = "Couldn't save. Your browser may be blocking storage.";
+        }
+      });
+
+      $('backup-restore').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        file.text().then((text) => {
+          const entries = HCDProgress.readBackup(JSON.parse(text));
+          if (!confirm('Replace the plan and progress in this browser with the ones in this file?')) return;
+          entries.forEach(([k, v]) => localStorage.setItem(k, JSON.stringify(v)));
+          location.reload();
+        }).catch((err) => {
+          $('backup-status').textContent = err instanceof SyntaxError ? "This file isn't a learning plan backup from this app." : err.message;
+        });
+        e.target.value = '';
+      });
+
       $('rem-download').addEventListener('click', () => {
         const ics = HCDProgress.buildIcs(state.plan, { weekday: Number($('rem-day').value), time: $('rem-time').value });
         const blob = new Blob([ics], { type: 'text/calendar' });
@@ -423,5 +464,6 @@
     });
   </script>
   <script src="/js/nav.js"></script>
+  <script src="/js/feedback.js"></script>
 </body>
 </html>
