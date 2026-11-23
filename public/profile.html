@@ -53,6 +53,8 @@
         </select>
       </label>
 
+      <p id="larger-note" class="notice" hidden>Larger organization? Start with a pilot in one department, then scale. <a href="https://www.danacannam.com">Get support scaling it</a>.</p>
+
       <fieldset>
         <legend>Which groups work at your organization?</legend>
         <label class="inline"><input type="checkbox" name="role_tiers" value="frontline"> Frontline employees</label>
@@ -92,6 +94,12 @@
     const form = document.getElementById('profile-form');
     const status = document.getElementById('status');
     HCDProfile.fillForm(form, HCDProfile.load());
+
+    // Larger organizations: suggest a pilot, and offer support.
+    const size = form.querySelector('select[name=size]');
+    const showLarger = () => { document.getElementById('larger-note').hidden = !['250-999', '1000+'].includes(size.value); };
+    size.addEventListener('change', showLarger);
+    showLarger();
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
