@@ -210,3 +210,6 @@ input[type=checkbox], input[type=radio] { width: 22px; height: 22px; flex: none;
   .document { padding: 20px 16px; }
   .document th, .document td { padding: 6px 8px; }
 }
+
+/* Anything marked hidden stays hidden, whatever its layout style */
+[hidden] { display: none !important; }

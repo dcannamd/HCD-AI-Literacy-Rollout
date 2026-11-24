@@ -12,7 +12,7 @@
     <header class="no-print">
       <p class="eyebrow">Your skills · Step 1</p>
       <h1>Your AI learning plan</h1>
-      <p class="lead">About 20 minutes a week, made for your role. Not a test.</p>
+      <p class="lead">About 20 minutes a week, or 10 minutes a day. Made for your role. Not a test.</p>
     </header>
 
     <p class="notice no-print">Stays on this device unless you share it.</p>
@@ -44,7 +44,7 @@
         <summary>Add reminders to my calendar</summary>
         <p class="hint">Works with Google, Outlook and Apple calendars.</p>
         <div class="row">
-          <label class="field">Day
+          <label class="field" id="rem-day-field">Day
             <select id="rem-day">
               <option value="1">Monday</option><option value="2" selected>Tuesday</option><option value="3">Wednesday</option>
               <option value="4">Thursday</option><option value="5">Friday</option>
@@ -119,9 +119,10 @@
 
       <label>Time each week
         <select name="minutes">
-          <option value="20" selected>About 20 minutes (1 session)</option>
-          <option value="40">About 40 minutes (2 sessions)</option>
-          <option value="60">About 60 minutes (3 sessions)</option>
+          <option value="daily">About 10 minutes a day, on workdays</option>
+          <option value="20" selected>About 20 minutes a week (1 session)</option>
+          <option value="40">About 40 minutes a week (2 sessions)</option>
+          <option value="60">About 60 minutes a week (3 sessions)</option>
         </select>
       </label>
     </form>
@@ -233,7 +234,8 @@
         next.textContent = '';
         if (sum.next) {
           const s = sum.next;
-          next.append(el('p', 'Up next · about 20 minutes', 'eyebrow'), el('h3', `${label(state.fw, s.area)}: ${s.title}`));
+          const when = state.plan.pace === 'daily' ? 'Up next · 10 minutes today, 10 tomorrow' : 'Up next · about 20 minutes';
+          next.append(el('p', when, 'eyebrow'), el('h3', `${label(state.fw, s.area)}: ${s.title}`));
           [['Learn (5 min)', s.learn], ['Try (10 min)', s.try], ['Reflect (5 min)', s.reflect]].forEach(([k, v]) => {
             const para = el('p');
             para.append(el('strong', `${k}: `), document.createTextNode(v));
@@ -267,6 +269,7 @@
         }));
 
         renderCheckin(p);
+        $('rem-day-field').hidden = state.plan.pace === 'daily';
       }
 
       // 90-day check-in: the same statements, rated again.
@@ -401,7 +404,8 @@
           const ratings = {};
           Object.keys(activities.self_assessment).forEach((a) => { ratings[a] = f[`rate_${a}`]; });
           const plan = HCDPlan.buildPlan({
-            tierIds: tiers, ratings, minutes: Number(f.minutes) || 20, task: f.task, country, activities, roleTiers
+            tierIds: tiers, ratings, minutes: f.minutes === 'daily' ? 'daily' : (Number(f.minutes) || 20),
+            task: f.task, country, activities, roleTiers, foundation: fw.foundation
           });
 
           const rated = plan.areas.filter((a) => ratings[a]);
@@ -427,11 +431,12 @@
           const done = HCDProgress.load().done;
           const weeks = plan.weeks.map((week, i) => {
             const parts = week.map((s) => {
-              const step = s.of > 1 ? ` (${s.number} of ${s.of})` : '';
+              const step = s.of > 1 && !s.course ? ` (${s.number} of ${s.of})` : '';
               const tick = done[HCDProgress.sessionKey(s)] ? '✓ ' : '';
               return `**${tick}${label(fw, s.area)}${step}: ${s.title}**\n\n- *Learn:* ${s.learn}\n- *Try:* ${s.try}\n- *Reflect:* ${s.reflect}`;
             });
-            return `### Week ${i + 1}\n\n${parts.join('\n\n')}`;
+            const span = plan.pace === 'daily' ? ` (workdays ${week[0].days[0]} to ${week[week.length - 1].days[1]})` : '';
+            return `### Week ${i + 1}${span}\n\n${parts.join('\n\n')}`;
           }).join('\n\n');
 
           const tierInfo = tiers.map((t) => roleTiers.tiers[t]).filter(Boolean);
@@ -445,18 +450,19 @@
             growth: HCDTemplate.joinList(growth),
             no_ratings: rated.length === 0,
             goals,
-            minutes: plan.perWeek * HCDPlan.SESSION_MINUTES,
-            length: `${plan.sessionCount} sessions over ${plan.weeks.length} weeks.` +
-              (plan.weeks.length > 13
-                ? ` To finish in 90 days, choose about ${Math.ceil(plan.sessionCount / 13) * HCDPlan.SESSION_MINUTES} minutes a week.`
+            pace_line: plan.pace === 'daily'
+              ? 'About 10 minutes a day, on workdays. Each 20-minute session spans two days: learn and start trying on day 1, then finish trying and reflect on day 2.'
+              : `About ${plan.minutesPerWeek} minutes a week. Each session: learn (5 min), try (10 min), reflect (5 min).`,
+            length: `That's about ${Math.round(plan.totalMinutes / 30) / 2} hours in total: ${plan.sessionCount} sessions over ${plan.weeks.length} weeks.` +
+              (plan.weeks.length > 13 && plan.pace !== 'daily'
+                ? ' To finish within 90 days, choose 10 minutes a day or more time each week.'
                 : ''),
             formats: HCDTemplate.joinList(f.formats || []),
             weeks,
             secure: f.secure,
             framework_short: country === 'CA' ? "Canada's AI literacy progression" : 'the DOL AI Literacy Framework',
             mapping: country === 'CA'
-              ? `Your sessions follow Canada's Understand, Use, Build progression.` +
-                (fw.foundation ? ` Optional: add the free ${fw.foundation.minutes}-minute course ${fw.foundation.label} in your first weeks (Job Bank's Training Finder, from December 2026).` : '')
+              ? `Your plan follows Canada's Understand, Use, Build progression. Its foundation is the free national course, ${fw.foundation.label} (about ${fw.foundation.minutes} minutes), split into 20-minute sittings. ${fw.foundation.where}. ${fw.foundation.fallback}`
               : "Each session covers one of the DOL's five AI literacy areas, with hands-on practice in the context of your own work."
           };
         }

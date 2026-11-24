@@ -24,7 +24,7 @@ Not rated yet, so the plan starts with the basics.
 
 ## How I'll learn
 
-About {{minutes}} minutes a week. Each session: learn (5 min), try (10 min), reflect (5 min). {{length}}{{#if formats}} I learn best through {{formats}}.{{/if}}
+{{pace_line}} {{length}}{{#if formats}} I learn best through {{formats}}.{{/if}}
 
 Practise with made-up details only. The practice sandbox can check your prompts.
 {{#if secure}}

@@ -71,12 +71,15 @@
     "https://www.canada.ca/en/innovation-science-economic-development/news/2026/09/government-of-canada-launches-national-ai-literacy-initiative.html",
     "https://www.hrreporter.com/focus-areas/automation-ai/ottawa-launches-free-ai-training-program-targeting-1-million-canadians/394880"
   ],
-  "foundation_intro": "Your sessions follow Canada's national Understand, Use, Build progression. For a shared foundation, add the free national course alongside your first weeks.",
   "foundation": {
     "label": "AI for All: Essentials for Canadians",
     "minutes": 90,
     "where": "Free and self-paced, through Job Bank's Training Finder and community partners, from December 2026",
-    "how": "Optional: in weeks 1 to 5, spend about 20 extra minutes a week on the course, or do it in one sitting."
+    "sitting_title": "Essentials for Canadians, part {{n}} of {{of}}",
+    "sitting_learn": "Work through about 20 minutes of the free national course, AI for All: Essentials for Canadians (Job Bank's Training Finder). Pick up where you left off last time.",
+    "sitting_try": "Take one idea from today's part and test it on this task: {{task}}. Use made-up details.",
+    "sitting_reflect": "What surprised me in this part, and what will I do differently at work?",
+    "fallback": "If the course isn't available to you yet, do the plan's own foundation session for now (What AI is, and what it isn't) and come back to the course when it opens."
   },
   "law_check": {
     "as_of": "November 2026",
@@ -90,5 +93,6 @@
       "https://www.hcamag.com/ca/specialization/employment-law/federal-privacy-bill-targets-employee-data-and-ai-hiring-with-fines-up-to-5-of-revenue/579056",
       "https://www.canadaemploymenthumanrightslaw.com/2025/11/ontarios-new-ai-rules-for-job-postings-in-2026-what-hr-needs-to-do-now/"
     ]
-  }
+  },
+  "foundation_intro": "Your plan follows Canada's Understand, Use, Build progression, and uses the free national course as its foundation."
 }
