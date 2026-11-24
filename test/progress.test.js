@@ -5,7 +5,7 @@ const { summary, sessionKey, buildIcs, firstSlot } = require('../public/js/progr
 const activities = require('../content/learning-plans/activities.json');
 const roleTiers = require('../content/learning-plans/role-tiers.json');
 
-const plan = buildPlan({ tierIds: ['frontline'], activities, roleTiers, country: 'CA', task: 'x' });
+const plan = buildPlan({ tierIds: ['frontline'], activities, roleTiers, country: 'US', task: 'x' });
 
 test('progress summary counts done sessions and finds the next one', () => {
   const sessions = plan.weeks.flat();
@@ -61,4 +61,18 @@ test('a progress backup round-trips, and other files are rejected plainly', () =
   assert.strictEqual(entries.length, 2);
   assert.throws(() => readBackup({ hello: 'world' }), /isn't a learning plan backup/);
   assert.throws(() => readBackup({ app: 'hcd-ai-literacy-rollout', type: 'learning-plan-backup', data: {} }), /empty/);
+});
+
+test('the daily calendar has two 10-minute workday events per session, never on weekends', () => {
+  const ca = require('../content/frameworks/ca.json');
+  const daily = buildPlan({ tierIds: ['frontline'], activities, roleTiers, country: 'CA', foundation: ca.foundation, minutes: 'daily' });
+  const ics = buildIcs(daily, { from: new Date(2026, 10, 27, 12, 0), time: '09:00' }); // a Friday, after 9:00
+  const starts = [...ics.matchAll(/DTSTART:(\d{8})T(\d{4})/g)].map((m) => m[1]);
+  assert.strictEqual(starts.length, daily.sessionCount * 2 + 1);
+  assert.strictEqual(starts[0], '20261130', 'starts the next Monday');
+  starts.forEach((d) => {
+    const day = new Date(+d.slice(0, 4), +d.slice(4, 6) - 1, +d.slice(6, 8)).getDay();
+    assert.ok(day >= 1 && day <= 5, `${d} is a workday`);
+  });
+  assert.ok(ics.includes('DTEND:20261130T091000'), '10 minutes long');
 });

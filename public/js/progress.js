@@ -53,8 +53,39 @@
     return d;
   }
 
+  // Next workday (Mon to Fri) at hh:mm, strictly after `from`.
+  function nextWorkday(from, time) {
+    const [h, m] = (time || '10:00').split(':').map(Number);
+    const d = new Date(from.getFullYear(), from.getMonth(), from.getDate(), h, m);
+    if (d <= from) d.setDate(d.getDate() + 1);
+    while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+    return d;
+  }
+
+  function buildDailyIcs(plan, options) {
+    const from = options.from || new Date();
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HCD AI Literacy Rollout//Learning plan//EN', 'CALSCALE:GREGORIAN'];
+    let day = nextWorkday(from, options.time);
+    const first = stamp(day);
+    const event = (uid, begin, minutes, summary, detail) => {
+      const end = new Date(begin.getTime() + minutes * 60000);
+      lines.push('BEGIN:VEVENT', `UID:${uid}-${first}@hcd-ai-literacy`, `DTSTAMP:${stamp(from)}`,
+        `DTSTART:${stamp(begin)}`, `DTEND:${stamp(end)}`, `SUMMARY:${esc(summary)}`, `DESCRIPTION:${esc(detail)}`, 'END:VEVENT');
+    };
+    plan.weeks.flat().forEach((s, i) => {
+      event(`hcd-plan-s${i + 1}-a`, day, 10, `AI learning (10 min): ${s.title}, part 1`, `Learn: ${s.learn}\nStart trying: ${s.try}`);
+      day = nextWorkday(day, options.time);
+      event(`hcd-plan-s${i + 1}-b`, day, 10, `AI learning (10 min): ${s.title}, part 2`, `Finish trying: ${s.try}\nReflect: ${s.reflect}`);
+      day = nextWorkday(day, options.time);
+    });
+    event('hcd-plan-checkin', day, 20, 'AI learning: my 90-day check-in', 'Rate the same statements again and compare with where you started.');
+    lines.push('END:VCALENDAR');
+    return lines.join('\r\n') + '\r\n';
+  }
+
   function buildIcs(plan, opts) {
     const options = opts || {};
+    if (plan.pace === 'daily') return buildDailyIcs(plan, options);
     const start = firstSlot(options.from || new Date(), options.weekday ?? 2, options.time);
     const minutes = 20;
     const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HCD AI Literacy Rollout//Learning plan//EN', 'CALSCALE:GREGORIAN'];

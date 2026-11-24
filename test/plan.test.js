@@ -63,3 +63,40 @@ test('only technical builders get the build area', () => {
   assert.ok(!buildPlan({ ...base, tierIds: ['executives'] }).areas.includes('build'));
   assert.ok(buildPlan({ ...base, tierIds: ['builders'] }).areas.includes('build'));
 });
+
+const ca = require('../content/frameworks/ca.json');
+const caBase = { ...base, country: 'CA', foundation: ca.foundation };
+
+test('in Canada, the national course replaces the foundation, in 20-minute sittings', () => {
+  const plan = buildPlan({ ...caBase, tierIds: ['frontline'] });
+  const course = plan.weeks.flat().filter((s) => s.course);
+  assert.strictEqual(course.length, 5, '90 minutes in 20-minute sittings');
+  assert.ok(!plan.weeks.flat().some((s) => s.area === 'understand' && !s.course), 'no duplicate foundation session');
+  assert.strictEqual(plan.weeks[0][0].title, 'Essentials for Canadians, part 1 of 5');
+  assert.strictEqual(plan.sessionCount, 13);
+});
+
+test('the US plan is unchanged by the Canadian course', () => {
+  const plan = buildPlan({ ...base, tierIds: ['frontline'], foundation: ca.foundation });
+  assert.ok(!plan.weeks.flat().some((s) => s.course));
+  assert.strictEqual(plan.sessionCount, 9);
+});
+
+test('Canadian plans fit 90 days at 20 minutes a week, except technical builders', () => {
+  for (const tier of Object.keys(roleTiers.tiers)) {
+    const weeks = buildPlan({ ...caBase, tierIds: [tier] }).weeks.length;
+    if (tier === 'builders') assert.ok(weeks > 13);
+    else assert.ok(weeks <= 13, `${tier}: ${weeks} weeks`);
+  }
+});
+
+test('10 minutes a day: each session spans two workdays, and every role fits 90 days', () => {
+  const plan = buildPlan({ ...caBase, tierIds: ['frontline'], minutes: 'daily' });
+  assert.strictEqual(plan.pace, 'daily');
+  assert.strictEqual(plan.minutesPerWeek, 50);
+  assert.deepStrictEqual(plan.weeks.map((w) => w.length), [3, 2, 3, 2, 3]);
+  assert.deepStrictEqual(plan.weeks[1][0].days, [7, 8]);
+  for (const tier of Object.keys(roleTiers.tiers)) {
+    assert.ok(buildPlan({ ...caBase, tierIds: [tier], minutes: 'daily' }).weeks.length <= 13, tier);
+  }
+});
